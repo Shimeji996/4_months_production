@@ -119,6 +119,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Gameover.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Stage1.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -154,6 +155,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Clear.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Gameover.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Stage1.h" />
     <ClInclude Include="Title.h" />

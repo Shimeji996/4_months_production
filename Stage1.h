@@ -3,9 +3,13 @@
 #include <Novice.h>
 #include "Vector2.h"
 
+#include "Player.h"
+
 class Stage1 : public Scene
 {
 public:
+	Stage1();
+	~Stage1();
 
 	void Initialize() override;
 
@@ -50,6 +54,9 @@ private:
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	};
+
+	//プレイヤーをステージ１に持たせる
+	Player* player_ = nullptr;
 
 	////スティック操作
 	//int stickPosX = 0;

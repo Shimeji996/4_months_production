@@ -1,15 +1,24 @@
 ﻿#include "Stage1.h"
 
+Stage1::Stage1() 
+{
+}
+
+Stage1::~Stage1()
+{
+	delete player_;
+}
+
 void Stage1::Initialize() {
 
+	player_ = new Player;
+	player_->Initialize();
 }
 
 void Stage1::Update() {
 
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
-
-	
 
 	Block block[8][15]{};
 
@@ -37,7 +46,7 @@ void Stage1::Update() {
 		}
 	}
 
-	
+	player_->Update();
 }
 
 void Stage1::Draw(){
@@ -53,5 +62,5 @@ void Stage1::Draw(){
 		}
 	}
 
-	
+	player_->Draw();
 }
