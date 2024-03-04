@@ -86,6 +86,40 @@ void Stage1::Update() {
 		else { playerPos.x += speed; }
 	}
 	else {}
+
+	//ここからジャンプの処理
+	if (keys[DIK_SPACE] && preKeys[DIK_SPACE] == 0 && isJump == false) {
+		isJump = true;
+		jumpSpeed = -18.0f;
+	}
+
+	if (isJump == true) {
+		jumpSpeed += playerAcceleration;
+		playerPos.y += jumpSpeed;
+	}
+
+	//
+	if (isJump == true && map[rightTopY][rightTopX] == BLOCK) {
+		isJump = false;
+
+		//無理やり押し出し処理を完成させた
+		//本来はどの向きから当たったかを見つける必要がある(例：上からなのか下からなのか)
+		//そこからsentor(これはどのくらい埋まっているのか)を計算する
+		//そのあとはplayerPosに埋まっていた分を戻す処理を書けばいい
+		//分かりやすくしているのが↓これ(上からブロックにあたっているからY座標の832.0fをとっている)
+		float sentor = playerPos.y - 832.0f;
+		playerPos.y -= sentor;
+
+	}
+
+	if (isJump == true && map[rightBottomY][rightBottomX] == BLOCK) {
+		isJump = false;
+
+		float sentor = playerPos.y - 832.0f;
+		playerPos.y -= sentor;
+
+	}
+
 }
 
 void Stage1::Draw() {

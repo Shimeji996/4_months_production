@@ -25,6 +25,11 @@ private:
 	float playerRad;
 	float speed;
 
+	bool isJump = false;
+	float jumpSpeed = 0.0f;
+
+	float playerAcceleration = 0.8f;
+
 	enum MapInfo {
 		NONE,
 		BLOCK
