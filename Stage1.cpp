@@ -2,6 +2,10 @@
 
 void Stage1::Initialize() {
 
+	playerPos = { 200,832 };
+
+	speed = 5.0f;
+
 }
 
 void Stage1::Update() {
@@ -53,5 +57,6 @@ void Stage1::Draw(){
 		}
 	}
 
-	
+	Novice::DrawBox(int(playerPos.x), int(playerPos.y), 64, 64, 0.0f, 0xFFFFFFFF, kFillModeSolid);
+
 }
