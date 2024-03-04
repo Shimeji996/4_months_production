@@ -45,6 +45,10 @@ private:
 	const int kWitdth = 64;
 	const int kHeight = 64;
 
+	//ジャンプ力
+	int Jamp = 32;
+	int G = 1;
+
 	//プレイヤーの各頂点座標
 	int PlayerRightTopX = 0; //右上Ｘ座標
 	int PlayerRightTopY = 0; //右上Ｙ座標
@@ -63,6 +67,6 @@ private:
 
 	//プレイヤーがもし進んだ時の移動座標
 	int PlayerSpeedX = 0;
-
+	int PlayerSpeedY = 0;
 };
 

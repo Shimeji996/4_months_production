@@ -29,6 +29,8 @@ void Player::Update()
 	//プレイヤーの移動速度初期化
 	PlayerSpeedX = 0;
 
+	PlayerSpeedY += G;
+
 	//プレイヤーの移動処理
 
 	//右
@@ -59,6 +61,28 @@ void Player::Update()
 		}
 	}
 	PlayerPosX += PlayerSpeedX;
+
+
+	PlayerRightBottomY = (PlayerPosY + PlayerRadius - 1 + PlayerSpeedY) / PlayerRadius;
+	PlayerLeftBottomY = (PlayerPosY + PlayerRadius - 1 + PlayerSpeedY) / PlayerRadius;
+	if (map[PlayerLeftBottomY][PlayerLeftBottomX] == 1 || map[PlayerRightBottomY][PlayerRightBottomX] == 1)
+	{
+		PlayerSpeedY = 0;
+		PlayerPosY = PlayerRightBottomY * 32 - PlayerRadius;
+		PlayerRightBottomY = (PlayerPosY + PlayerRadius - 1) / PlayerRadius;
+		PlayerLeftBottomY = (PlayerPosY + PlayerRadius - 1) / PlayerRadius;
+	}
+
+	if (input_->PushKey(DIK_SPACE) == 1)
+	{
+		PlayerLeftTopY = (PlayerPosY - PlayerRadius - Jamp) / PlayerRadius;
+		PlayerRightTopY = (PlayerPosY - PlayerRadius - Jamp) / PlayerRadius;
+		if (map[PlayerLeftTopY][PlayerLeftTopX] == 0 && map[PlayerRightTopY][PlayerRightTopX] == 0)
+		{
+			PlayerPosY -= Jamp;
+		}
+	}
+	PlayerPosY += PlayerSpeedY;
 
 }
 
