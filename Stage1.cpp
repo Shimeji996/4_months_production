@@ -89,10 +89,12 @@ void Stage1::Update() {
 }
 
 void Stage1::Draw() {
+#ifdef _DEBUG
 	Novice::ScreenPrintf(0, 0, "Stage1");
 	Novice::ScreenPrintf(0, 20, "playerPos : %2.0f %2.0f", playerPos.x, playerPos.y);
 	Novice::ScreenPrintf(0, 40, "left pos : %d %d", int(playerPos.x) / blockSize - 1, int(playerPos.y) / blockSize);
 	Novice::ScreenPrintf(0, 60, "left player pos : bottom : %d %d , top : %d %d", leftBottomX, leftBottomY, leftTopX, leftTopY);
+#endif
 
 	//ブロックの描画
 	for (int y = 0; y < 8; y++) {
