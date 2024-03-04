@@ -9,7 +9,7 @@ void Stage1::Update() {
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
 
-	
+	Novice::GetAnalogInputLeft(0, &stickPosX, &stickPosY);
 
 	Block block[8][15]{};
 

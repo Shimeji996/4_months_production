@@ -51,9 +51,9 @@ private:
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	};
 
-	////スティック操作
-	//int stickPosX = 0;
-	//int stickPosY = 0;
+	//スティック操作
+	int stickPosX = 0;
+	int stickPosY = 0;
 
 	//int leftTopX;//左上のX座標
 	//int leftTopY;//左上のY座標
