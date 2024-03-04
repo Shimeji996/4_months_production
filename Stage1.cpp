@@ -102,7 +102,11 @@ void Stage1::Update() {
 	if (isJump) {
 		if (map[rightBottomY][rightBottomX] == BLOCK ||
 			map[leftBottomY][leftBottomX] == BLOCK) {
-			playerPos.y = float((map[leftBottomY + 1][leftBottomX]) * blockSize);
+			float tmp = float(1024 - blockSize - (map[leftBottomY - 1][leftBottomX] + playerRad));
+			if (tmp < 0) {
+				tmp *= -1;
+			}
+			playerPos.y = tmp;
 			isJump = false;
 		}
 	}
@@ -114,6 +118,7 @@ void Stage1::Draw() {
 	Novice::ScreenPrintf(0, 20, "playerPos : %2.0f %2.0f", playerPos.x, playerPos.y);
 	Novice::ScreenPrintf(0, 40, "left pos : %d %d", int(playerPos.x) / blockSize - 1, int(playerPos.y) / blockSize);
 	Novice::ScreenPrintf(0, 60, "left player pos : bottom : %d %d , top : %d %d", leftBottomX, leftBottomY, leftTopX, leftTopY);
+	Novice::ScreenPrintf(0, 80, "%f", float(1024 - (map[leftBottomY + 1][leftBottomX] + playerRad)));
 #endif
 
 	//ブロックの描画
