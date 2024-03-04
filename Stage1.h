@@ -20,7 +20,8 @@ private:
 
 	Vector2 playerPos;
 
-	float speed;
+	int playerRad;
+	int speed;
 
 	enum MapInfo {
 		NONE,
@@ -61,16 +62,16 @@ private:
 	int stickPosX = 0;
 	int stickPosY = 0;
 
-	//int leftTopX;//左上のX座標
-	//int leftTopY;//左上のY座標
-	//int rightTopX;//右上のX座標
-	//int rightTopY;//右上のY座標
-	//int leftBottomX;//左下のX座標
-	//int leftBottomY;//左下のY座標
-	//int rightBottomX;//右下のX座標
-	//int rightBottomY;//右下のY座標
-	//int playerPosOldX;//Xに仮に進んだときの変数
-	//int playerPosOldY;//Yに仮に進んだときの変数
+	int leftTopX;//左上のX座標
+	int leftTopY;//左上のY座標
+	int rightTopX;//右上のX座標
+	int rightTopY;//右上のY座標
+	int leftBottomX;//左下のX座標
+	int leftBottomY;//左下のY座標
+	int rightBottomX;//右下のX座標
+	int rightBottomY;//右下のY座標
+	int playerPosOldX;//Xに仮に進んだときの変数
+	int playerPosOldY;//Yに仮に進んだときの変数
 
 };
 

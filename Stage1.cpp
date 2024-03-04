@@ -4,7 +4,8 @@ void Stage1::Initialize() {
 
 	playerPos = { 200,832 };
 
-	speed = 5.0f;
+	playerRad = 64;
+	speed = 5;
 
 	for (int y = 0; y < 8; y++) {
 		for (int x = 0; x < 15; x++) {
@@ -36,13 +37,59 @@ void Stage1::Update() {
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
 
+	//右上座標
+	rightTopX = (int(playerPos.x) + int(playerRad) - 1) / int(blockSize);
+	rightTopY = (int(playerPos.y) - int(playerRad)) / int(blockSize);
+
+	// 右下座標
+	rightBottomX = (int(playerPos.x) + int(playerRad) - 1) / int(blockSize);
+	rightBottomY = (int(playerPos.y) + int(playerRad) - 1) / int(blockSize);
+
+	// 左上座標
+	leftTopX = (int(playerPos.x) - int(playerRad)) / int(blockSize);
+	leftTopY = (int(playerPos.y) - int(playerRad)) / int(blockSize);
+
+	// 左下座標
+	leftBottomX = (int(playerPos.x) - int(playerRad)) / int(blockSize);
+	leftBottomY = (int(playerPos.y) + int(playerRad) - 1) / int(blockSize);
+
+	//ポジションを仮に代入
+	playerPosOldX = int(playerPos.x);
+	playerPosOldY = int(playerPos.y);
+
 	Novice::GetAnalogInputLeft(0, &stickPosX, &stickPosY);
 
 	if (keys[DIK_A] || stickPosX <= -20000) {
-		playerPos.x -= speed;
+		/*leftTopX = ((int(playerPos.x) - int(speed)) - int(playerRad)) / int(blockSize);
+		leftBottomX = ((int(playerPos.x) - int(speed)) - int(playerRad)) / int(blockSize);*/
+		//ブロックに当たった時
+		if (map[leftTopY][leftTopX] == BLOCK) {
+			playerPos.x = float(playerPosOldX);
+			playerPos.y = float(playerPosOldY);
+		}
+		else if (map[leftBottomY][leftBottomX] == BLOCK) {
+			playerPos.x = float(playerPosOldX);
+			playerPos.y = float(playerPosOldY);
+		}
+		else {
+			playerPos.x -= float(speed);
+		}
 	}
 	else if (keys[DIK_D] || stickPosX >= 20000) {
-		playerPos.x += speed;
+		/*rightTopX = ((int(playerPos.x) + int(speed)) + int(playerRad) - 1) / int(blockSize);
+		rightBottomX = ((int(playerPos.x) + int(speed)) + int(playerRad) - 1) / int(blockSize);*/
+		//ブロックに当たった時
+		if (map[rightTopY][rightTopX] == BLOCK) {
+			playerPos.x = float(playerPosOldX);
+			playerPos.y = float(playerPosOldY);
+		}
+		else if (map[rightBottomY][rightBottomX] == BLOCK) {
+			playerPos.x = float(playerPosOldX);
+			playerPos.y = float(playerPosOldY);
+		}
+		else {
+			playerPos.x += int(speed);
+		}
 	}
 	else {}
 }
@@ -60,6 +107,6 @@ void Stage1::Draw(){
 		}
 	}
 
-	Novice::DrawBox(int(playerPos.x), int(playerPos.y), 64, 64, 0.0f, 0xFFFFFFFF, kFillModeSolid);
+	Novice::DrawBox(int(playerPos.x), int(playerPos.y), playerRad, playerRad, 0.0f, 0xFFFFFFFF, kFillModeSolid);
 
 }
