@@ -37,7 +37,7 @@ private:
 		Vector2 imagePos; //読み込む画像の座標
 	};
 
-	Block block[8][15]{};
+	Block block[100][100]{};
 
 	int blockSize = 128;
 
