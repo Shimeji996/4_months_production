@@ -5,22 +5,6 @@ void Stage1::Initialize() {
 	playerPos = { 200,832 };
 
 	speed = 5.0f;
-}
-
-void Stage1::Update() {
-
-	memcpy(preKeys, keys, 256);
-	Novice::GetHitKeyStateAll(keys);
-
-	Novice::GetAnalogInputLeft(0, &stickPosX, &stickPosY);
-
-	if (keys[DIK_A] || stickPosX <= -20000) {
-		playerPos.x -= speed;
-	}
-	else if (keys[DIK_D] || stickPosX >= 20000) {
-		playerPos.x += speed;
-	}
-	else {}
 
 	for (int y = 0; y < 8; y++) {
 		for (int x = 0; x < 15; x++) {
@@ -45,8 +29,22 @@ void Stage1::Update() {
 			}
 		}
 	}
+}
 
-	
+void Stage1::Update() {
+
+	memcpy(preKeys, keys, 256);
+	Novice::GetHitKeyStateAll(keys);
+
+	Novice::GetAnalogInputLeft(0, &stickPosX, &stickPosY);
+
+	if (keys[DIK_A] || stickPosX <= -20000) {
+		playerPos.x -= speed;
+	}
+	else if (keys[DIK_D] || stickPosX >= 20000) {
+		playerPos.x += speed;
+	}
+	else {}
 }
 
 void Stage1::Draw(){
