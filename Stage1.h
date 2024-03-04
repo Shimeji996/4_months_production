@@ -18,10 +18,12 @@ private:
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	Vector2 playerPos;
+	Vector2 playerPos;//実ポジション
 
-	int playerRad;
-	int speed;
+	Vector2 playerPosOld;//仮に進んだときの変数
+
+	float playerRad;
+	float speed;
 
 	enum MapInfo {
 		NONE,
@@ -70,8 +72,6 @@ private:
 	int leftBottomY;//左下のY座標
 	int rightBottomX;//右下のX座標
 	int rightBottomY;//右下のY座標
-	int playerPosOldX;//Xに仮に進んだときの変数
-	int playerPosOldY;//Yに仮に進んだときの変数
 
 };
 
