@@ -202,7 +202,7 @@ void Stage1::PlayerUpdate()
 		}
 
 		//重力
-		//Gravity();
+		Gravity();
 	}
 	else {
 		//ジャンプ更新処理
