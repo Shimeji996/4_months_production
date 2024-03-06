@@ -20,6 +20,8 @@ private:
 
 	void CreateMap();
 
+	void GetAllCollision();
+	void Player2EnemyCollision();
 	void Player2MapCollision();
 
 	void PlayerMove();
@@ -72,6 +74,7 @@ private:
 	int stage = 0;
 
 	bool isHitP2M = false;
+	bool isHitP2E = false;
 
 	//Vector2 playerPosOld;//仮に進んだときの変数
 
@@ -83,6 +86,5 @@ private:
 	int leftBottomY;//左下のY座標
 	int rightBottomX;//右下のX座標
 	int rightBottomY;//右下のY座標
-
 };
 

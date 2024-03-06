@@ -21,7 +21,6 @@ void Stage1::Initialize() {
 }
 
 void Stage1::Update() {
-
 	//デバイス関連
 	GetDevice();
 
@@ -46,7 +45,7 @@ void Stage1::Update() {
 	enemy_->Update();
 
 	//当たり判定
-	Player2MapCollision();
+	GetAllCollision();
 }
 
 void Stage1::Draw() {
@@ -128,11 +127,8 @@ void Stage1::CreateMap()
 	}
 }
 
-void Stage1::Player2MapCollision()
+void Stage1::GetAllCollision()
 {
-	//実ポジションを仮ポジションに代入
-	Vector2 playerPosOld = playerPos;
-
 	//右上座標
 	rightTopX = int((playerPos.x + playerRad)) / blockSize;
 	rightTopY = int(playerPos.y - playerRad) / blockSize;
@@ -148,6 +144,37 @@ void Stage1::Player2MapCollision()
 	// 左下座標
 	leftBottomX = int((playerPos.x - playerRad) / blockSize + 0.5f);
 	leftBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
+
+	//プレイヤーとマップチップの当たり判定
+	Player2MapCollision();
+	//プレイヤーと敵の当たり判定
+	Player2EnemyCollision();
+}
+
+void Stage1::Player2EnemyCollision()
+{
+	if (playerPos.y <= enemy_->GetPosition().y + enemy_->GetRad() &&
+		playerPos.y+playerRad>=enemy_->GetPosition().y) {
+		if (playerPos.x <= enemy_->GetPosition().x + enemy_->GetRad() &&
+			playerPos.x + playerRad >= enemy_->GetPosition().x) {
+			isHitP2E = true;
+		}
+		else {
+			isHitP2E = false;
+		}
+	}
+	else {
+		isHitP2E = false;
+	}
+
+	//当たっている間
+	if (isHitP2E) {}
+}
+
+void Stage1::Player2MapCollision()
+{
+	//実ポジションを仮ポジションに代入
+	Vector2 playerPosOld = playerPos;
 
 	//ブロックに当たった時
 	if (map[leftTopY][leftTopX] == BLOCK ||

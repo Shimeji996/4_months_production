@@ -18,6 +18,9 @@ public:
 	//エネミーリセット
 	void Reset(Vector2 Pos);
 
+	Vector2 GetPosition() { return enemyPos; }
+	float GetRad() { return enemyRad; }
+
 private:
 
 	//エネミー死亡フラグ
