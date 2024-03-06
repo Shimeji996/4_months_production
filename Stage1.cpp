@@ -39,7 +39,6 @@ void Stage1::Update() {
 	else if (isJump) {
 		PlayerJumpUpdate();
 	}
-	else {}
 
 	//敵の更新関数
 	enemy_->Update();
@@ -60,6 +59,8 @@ void Stage1::Draw() {
 	Novice::ScreenPrintf(0, 100, "mapPos : rightTop:%d %d %d, rihgtBottom:%d %d %d",
 		rightTopX, rightTopY, map[rightTopX + 1][rightTopY - 1],
 		rightBottomX, rightBottomY, map[rightBottomX + 1][rightBottomY + 1]);
+	Novice::ScreenPrintf(0, 200, "tmp : %d %d, %d", int(playerPos.x / blockSize), int(playerPos.y / blockSize + 1), map[int(playerPos.y / blockSize + 1)][int(playerPos.x / blockSize)]);
+
 #endif
 
 	//ブロックの描画
@@ -72,11 +73,11 @@ void Stage1::Draw() {
 		}
 	}
 
-	//プレイヤーの描画
-	Novice::DrawBox(int(playerPos.x), int(playerPos.y), int(playerRad), int(playerRad), 0.0f, 0xFFFFFFFF, kFillModeSolid);
-
 	//敵の描画関数
 	enemy_->Draw();
+
+	//プレイヤーの描画
+	Novice::DrawBox(int(playerPos.x), int(playerPos.y), int(playerRad), int(playerRad), 0.0f, playerColor, kFillModeSolid);
 }
 
 void Stage1::GetDevice()
@@ -114,6 +115,7 @@ void Stage1::CreateMap()
 					block[y][x].state = ENEMY;
 					enemy_->Initialize({ float(x * blockSize), float((y + enemy_->GetRad()) * blockSize) });
 				}
+
 				//ブロックがある場合
 				else if (map[y][x] == 1) {
 					block[y][x].state = BLOCK;
@@ -151,8 +153,10 @@ void Stage1::GetAllCollision()
 	leftBottomX = int((playerPos.x - playerRad) / blockSize + 0.5f);
 	leftBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
 
-	//プレイヤーとマップチップの当たり判定
-	Player2MapCollision();
+	if (isJump) {
+		//プレイヤーとマップチップの当たり判定
+		Player2MapCollision();
+	}
 	//プレイヤーと敵の当たり判定
 	Player2EnemyCollision();
 }
@@ -174,7 +178,8 @@ void Stage1::Player2EnemyCollision()
 	}
 
 	//当たっている間
-	if (isHitP2E) {}
+	if (isHitP2E) { playerColor = BLUE; }
+	else { playerColor = 0xFFFFFFFF; }
 }
 
 void Stage1::Player2MapCollision()
@@ -223,28 +228,30 @@ void Stage1::PlayerJumpUpdate()
 	playerPos.y += jumpSpeed;
 
 	//着地
-	if (map[leftBottomY][leftBottomX] == BLOCK) {
-		float tmp = float(1024 - blockSize - (map[leftBottomY - 1][leftBottomX] + playerRad));
-		if (tmp < 0) {
-			tmp *= -1;
+	if (map[leftBottomY][leftBottomX] == BLOCK ||
+		map[rightBottomY][rightBottomX] == BLOCK) {
+		isLanding = true;
+	}
+
+	if (isLanding) {
+		float tmp = playerPos.y;
+		while (map[int(tmp / blockSize + 1)][int(playerPos.x / blockSize)] == BLOCK) {
+			tmp -= 0.1f;
 		}
-		playerPos.y = tmp;
+		playerPos.y = tmp + playerRad;
+		isLanding = false;
 		isJump = false;
 	}
-	else if (map[rightBottomY][rightBottomX] == BLOCK) {
-		float tmp = float(1024 - blockSize - (map[rightBottomY - 1][rightBottomX] + playerRad));
-		if (tmp < 0) {
-			tmp *= -1;
-		}
-		playerPos.y = tmp;
-		isJump = false;
-	}
-	else {}
 }
 
 void Stage1::Reset()
 {
 	playerPos = { 400.0f,832.0f };
+
+	isJump = false;
+	isLanding = false;
+	isHitP2M = false;
+	isHitP2E = false;
 
 	stage++;
 	CreateMap();

@@ -60,9 +60,12 @@ private:
 	float playerRad;
 	float speed;
 	float playerAcceleration = 0.8f;
+	unsigned int playerColor = 0xFFFFFFFF;
 
 	bool isJump = false;
 	float jumpSpeed = 0.0f;
+
+	bool isLanding = false;
 
 	//敵の生成
 	Enemy* enemy_ = nullptr;
