@@ -38,7 +38,14 @@ void Stage1::Draw() {
 #ifdef _DEBUG
 	Novice::ScreenPrintf(0, 0, "Stage1");
 	Novice::ScreenPrintf(0, 20, "playerPos : %2.0f %2.0f", playerPos.x, playerPos.y);
-	Novice::ScreenPrintf(0, 40, "left pos : %d %d", int(playerPos.x) / blockSize - 1, int(playerPos.y) / blockSize);
+	Novice::ScreenPrintf(0, 40, "playerMapPos : %d %d, %d", int(playerPos.x) / blockSize, int(playerPos.y) / blockSize, isHitP2M);
+	Novice::ScreenPrintf(0, 60, "bottom pos : left:%d %d, right:%d %d", leftBottomX, leftBottomY, rightBottomX, rightBottomY);
+	Novice::ScreenPrintf(0, 80, "mapPos : leftTop:%d %d %d, leftBottom:%d %d %d",
+		leftTopX, leftTopY, map[leftTopX - 1][leftTopY - 1],
+		leftBottomX, leftBottomY, map[leftBottomX - 1][leftBottomY + 1]);
+	Novice::ScreenPrintf(0, 100, "mapPos : rightTop:%d %d %d, rihgtBottom:%d %d %d",
+		rightTopX, rightTopY, map[rightTopX + 1][rightTopY - 1],
+		rightBottomX, rightBottomY, map[rightBottomX + 1][rightBottomY + 1]);
 #endif
 
 	//ブロックの描画
@@ -109,20 +116,20 @@ void Stage1::Player2MapCollision()
 	Vector2 playerPosOld = playerPos;
 
 	//右上座標
-	int rightTopX = int((playerPos.x + playerRad) - 1) / blockSize;
-	int rightTopY = int(playerPos.y - playerRad) / blockSize;
+	rightTopX = int((playerPos.x + playerRad)) / blockSize;
+	rightTopY = int(playerPos.y - playerRad) / blockSize;
 
 	// 右下座標
-	int rightBottomX = int((playerPos.x + playerRad) - 1) / blockSize;
-	int rightBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
+	rightBottomX = int((playerPos.x + playerRad)) / blockSize;
+	rightBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
 
 	// 左上座標
-	int leftTopX = int((playerPos.x - playerRad) / blockSize + 0.5f);
-	int leftTopY = int((playerPos.y - playerRad)) / blockSize;
+	leftTopX = int((playerPos.x - playerRad) / blockSize + 0.5f);
+	leftTopY = int((playerPos.y - playerRad)) / blockSize;
 
 	// 左下座標
-	int leftBottomX = int((playerPos.x - playerRad) / blockSize + 0.5f);
-	int leftBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
+	leftBottomX = int((playerPos.x - playerRad) / blockSize + 0.5f);
+	leftBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
 
 	//ブロックに当たった時
 	if (map[leftTopY][leftTopX] == BLOCK ||
@@ -164,14 +171,6 @@ void Stage1::PlayerJumpUpdate()
 	jumpSpeed += playerAcceleration;
 	playerPos.y += jumpSpeed;
 
-	// 右下座標
-	int rightBottomX = int((playerPos.x + playerRad) - 1) / blockSize;
-	int rightBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
-
-	// 左下座標
-	int leftBottomX = int((playerPos.x - playerRad) / blockSize + 0.5f);
-	int leftBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
-
 	//着地
 	if (map[leftBottomY][leftBottomX] == BLOCK) {
 		float tmp = float(1024 - blockSize - (map[leftBottomY - 1][leftBottomX] + playerRad));
@@ -202,9 +201,7 @@ void Stage1::Reset()
 
 bool Stage1::isTriggerSpace() {
 	if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-		{
-			return true;
-		}
-
-		return false;
+		return true;
 	}
+	return false;
+}

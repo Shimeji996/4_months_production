@@ -69,7 +69,7 @@ private:
 
 	bool isHitP2M = false;
 
-	/*Vector2 playerPosOld;//仮に進んだときの変数
+	//Vector2 playerPosOld;//仮に進んだときの変数
 
 	int leftTopX;//左上のX座標
 	int leftTopY;//左上のY座標
@@ -78,7 +78,7 @@ private:
 	int leftBottomX;//左下のX座標
 	int leftBottomY;//左下のY座標
 	int rightBottomX;//右下のX座標
-	int rightBottomY;//右下のY座標*/
+	int rightBottomY;//右下のY座標
 
 };
 
