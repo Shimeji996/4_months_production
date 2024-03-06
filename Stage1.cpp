@@ -202,7 +202,7 @@ void Stage1::PlayerUpdate()
 		}
 
 		//重力
-		Gravity();
+		//Gravity();
 	}
 	else {
 		//ジャンプ更新処理
@@ -278,23 +278,29 @@ void Stage1::AllPushingBack()
 
 void Stage1::LeftPushingBack()
 {
-	while (map[leftBottomY][leftBottomX] == BLOCK || 
+	/*while (map[leftBottomY][leftBottomX] == BLOCK &&
 		map[leftTopY][leftTopX] == BLOCK) {
+		playerPos.x += 0.1f;
+	}*/
+	while (map[int(playerPos.y / blockSize)][int(playerPos.x / blockSize)] == BLOCK) {
 		playerPos.x += 0.1f;
 	}
 }
 
 void Stage1::RightPushingBack()
 {
-	while (map[rightBottomY][rightBottomX] == BLOCK ||
+	/*while (map[rightBottomY][rightBottomX] == BLOCK &&
 		map[rightTopY][rightTopX] == BLOCK) {
+		playerPos.x -= 0.1f;
+	}*/
+	while (map[int(playerPos.y / blockSize)][int(playerPos.x / blockSize + 0.5)] == BLOCK) {
 		playerPos.x -= 0.1f;
 	}
 }
 
 void Stage1::TopPushingBack()
 {
-	while (map[leftTopY][leftTopX] == BLOCK ||
+	while (map[leftTopY][leftTopX] == BLOCK &&
 		map[rightTopY][rightTopX] == BLOCK) {
 		playerPos.y += 0.1f;
 	}
@@ -302,8 +308,11 @@ void Stage1::TopPushingBack()
 
 void Stage1::BottomPushingBack()
 {
-	while (map[leftBottomY][leftBottomX] == BLOCK ||
+	/*while (map[leftBottomY][leftBottomX] == BLOCK &&
 		map[rightBottomY][rightBottomX] == BLOCK) {
+		playerPos.y -= 0.1f;
+	}*/
+	while (map[int(playerPos.y / blockSize + 0.5)][int(playerPos.x / blockSize)] == BLOCK) {
 		playerPos.y -= 0.1f;
 	}
 }
@@ -311,10 +320,10 @@ void Stage1::BottomPushingBack()
 void Stage1::Gravity()
 {
 	//重力処理
-	/*float gravity = playerAcceleration;
+	float gravity = playerAcceleration;
 	while (map[int(playerPos.y / blockSize + 0.5)][int(playerPos.x / blockSize)] != BLOCK) {
 		playerPos.y += gravity;
-	}*/
+	}
 }
 
 bool Stage1::isTriggerSpace() {
