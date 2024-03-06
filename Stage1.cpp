@@ -24,21 +24,20 @@ void Stage1::Update() {
 	//デバイス関連
 	GetDevice();
 
-	//ブロックに当たっていないなら
-	if (!isHitP2M) {
-		//移動処理
-		PlayerMove();
-	}
+	//移動処理
+	PlayerMove();
 
-	//ジャンプ処理
 	if (!isJump) {
-		if (isTriggerSpace()) {
-			PlayerJumpInitialize();
-		}
+		//重力
+		Gravity();
 	}
 	else if (isJump) {
+		//ジャンプ更新処理
 		PlayerJumpUpdate();
 	}
+
+	//押し出し処理
+	Pushing();
 
 	//敵の更新関数
 	enemy_->Update();
@@ -51,7 +50,7 @@ void Stage1::Draw() {
 #ifdef _DEBUG
 	Novice::ScreenPrintf(0, 0, "Stage1");
 	Novice::ScreenPrintf(0, 20, "playerPos : %2.0f %2.0f", playerPos.x, playerPos.y);
-	Novice::ScreenPrintf(0, 40, "playerMapPos : %d %d, %d", int(playerPos.x) / blockSize, int(playerPos.y) / blockSize, isHitP2M);
+	Novice::ScreenPrintf(0, 40, "playerMapPos : %d %d", int(playerPos.x) / blockSize, int(playerPos.y) / blockSize);
 	Novice::ScreenPrintf(0, 60, "bottom pos : left:%d %d, right:%d %d", leftBottomX, leftBottomY, rightBottomX, rightBottomY);
 	Novice::ScreenPrintf(0, 80, "mapPos : leftTop:%d %d %d, leftBottom:%d %d %d",
 		leftTopX, leftTopY, map[leftTopX - 1][leftTopY - 1],
@@ -153,10 +152,8 @@ void Stage1::GetAllCollision()
 	leftBottomX = int((playerPos.x - playerRad) / blockSize + 0.5f);
 	leftBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
 
-	if (isJump) {
-		//プレイヤーとマップチップの当たり判定
-		Player2MapCollision();
-	}
+	//プレイヤーとマップチップの当たり判定
+	//Player2MapCollision();
 	//プレイヤーと敵の当たり判定
 	Player2EnemyCollision();
 }
@@ -188,8 +185,8 @@ void Stage1::Player2MapCollision()
 	Vector2 playerPosOld = playerPos;
 
 	//ブロックに当たった時
-	if (map[leftTopY][leftTopX] == BLOCK ||
-		map[leftBottomY][leftBottomX] == BLOCK ||
+	if (map[leftBottomY][leftBottomX] == BLOCK ||
+		map[leftTopY][leftTopX] == BLOCK ||
 		map[rightTopY][rightTopX] == BLOCK ||
 		map[rightBottomY][rightBottomX] == BLOCK) {
 		isHitP2M = true;
@@ -201,19 +198,20 @@ void Stage1::Player2MapCollision()
 	//当たっている間移動不可
 	if (isHitP2M) {
 		playerPos.x = playerPosOld.x;
-		playerPos.y = playerPosOld.y;
 	}
 }
 
 void Stage1::PlayerMove()
 {
-	if (keys[DIK_A] || stickPosX <= -20000) {
-		playerPos.x -= speed;
+	if (!isHitP2M) {
+		if (keys[DIK_A] || stickPosX <= -20000) {
+			playerPos.x -= speed;
+		}
+		else if (keys[DIK_D] || stickPosX >= 20000) {
+			playerPos.x += speed;
+		}
+		else {}
 	}
-	else if (keys[DIK_D] || stickPosX >= 20000) {
-		playerPos.x += speed;
-	}
-	else {}
 }
 
 void Stage1::PlayerJumpInitialize()
@@ -235,6 +233,7 @@ void Stage1::PlayerJumpUpdate()
 
 	if (isLanding) {
 		float tmp = playerPos.y;
+		//押し出し処理
 		while (map[int(tmp / blockSize + 1)][int(playerPos.x / blockSize)] == BLOCK) {
 			tmp -= 0.1f;
 		}
@@ -255,6 +254,44 @@ void Stage1::Reset()
 
 	stage++;
 	CreateMap();
+}
+
+void Stage1::Pushing()
+{
+	//押し出し処理
+	//下
+	/*while (map[int(playerPos.y / blockSize + 0.5f)][int(playerPos.x / blockSize)] == BLOCK) {
+		playerPos.y -= 0.1f;
+	}*/
+	//上
+	/*while (map[int(playerPos.y / blockSize - 1)][int(playerPos.x / blockSize)] == BLOCK) {
+		playerPos.y += 0.1f;
+	}*/
+	//左
+	while (map[int(playerPos.y / blockSize)][int(playerPos.x / blockSize)] == BLOCK) {
+		playerPos.x += 0.1f;
+	}
+	//右
+	while (map[int(playerPos.y / blockSize)][int(playerPos.x / blockSize + 0.5)] == BLOCK) {
+		playerPos.x -= 0.1f;
+	}
+}
+
+void Stage1::Gravity()
+{
+	float gravity = 0.7f;
+	if (map[int(playerPos.y / blockSize + 0.5)][int(playerPos.x / blockSize)] != BLOCK) {
+		playerPos.y += gravity;
+	}
+	else {
+		if (!isJump) {
+			//スペースキーを押したら
+			if (isTriggerSpace()) {
+				//ジャンプ開始
+				PlayerJumpInitialize();
+			}
+		}
+	}
 }
 
 bool Stage1::isTriggerSpace() {

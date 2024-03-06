@@ -30,6 +30,10 @@ private:
 
 	void Reset();
 
+	void Pushing();
+
+	void Gravity();
+
 	bool isTriggerSpace();
 
 private:
