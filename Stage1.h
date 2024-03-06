@@ -3,9 +3,15 @@
 #include <Novice.h>
 #include "Vector2.h"
 
+#include "Enemy.h"
+
 class Stage1 : public Scene
 {
 public:
+
+	Stage1();
+
+	~Stage1();
 
 	void Initialize() override;
 
@@ -79,6 +85,10 @@ private:
 	int leftBottomY;//左下のY座標
 	int rightBottomX;//右下のX座標
 	int rightBottomY;//右下のY座標
+
+
+	//各クラスの初期化？
+	Enemy* enemy_ = nullptr; //エネミー
 
 };
 
