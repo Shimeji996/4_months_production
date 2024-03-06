@@ -14,22 +14,20 @@ public:
 	void Draw() override;
 
 private:
+	void GetDevice();
 
-	char keys[256] = { 0 };
-	char preKeys[256] = { 0 };
+	void CreateMap();
 
-	Vector2 playerPos;//実ポジション
+	void Player2MapCollision();
 
-	Vector2 playerPosOld;//仮に進んだときの変数
+	void PlayerMove();
 
-	float playerRad;
-	float speed;
+	void PlayerJumpInitialize();
+	void PlayerJumpUpdate();
 
-	bool isJump = false;
-	float jumpSpeed = 0.0f;
+	void Reset();
 
-	float playerAcceleration = 0.8f;
-
+private:
 	enum MapInfo {
 		NONE,
 		BLOCK
@@ -42,27 +40,38 @@ private:
 		Vector2 imagePos; //読み込む画像の座標
 	};
 
-	Block block[100][100]{};
+private:
 
-	int blockSize = 128;
-
-	/*int mapHeight = 8;
-	int mapWidth = 30;*/
-
-	/*float posXtmp = 0.0f;
-	float posYtmp = 0.0f;*/
-
-	int gh1 = Novice::LoadTexture("./Resources/block.png");
-
-	int map[100][100]{};
-
-	int stage = 1;
-
-	void CreateMap();
+	char keys[256] = { 0 };
+	char preKeys[256] = { 0 };
 
 	//スティック操作
 	int stickPosX = 0;
 	int stickPosY = 0;
+
+	int gh1 = Novice::LoadTexture("./Resources/block.png");
+
+	Vector2 playerPos;//実ポジション
+
+	float playerRad;
+	float speed;
+
+	bool isJump = false;
+	float jumpSpeed = 0.0f;
+
+	float playerAcceleration = 0.8f;
+
+	Block block[100][100]{};
+
+	int blockSize = 128;
+
+	int map[100][100]{};
+
+	int stage = 0;
+
+	bool isHitP2M = false;
+
+	/*Vector2 playerPosOld;//仮に進んだときの変数
 
 	int leftTopX;//左上のX座標
 	int leftTopY;//左上のY座標
@@ -71,7 +80,7 @@ private:
 	int leftBottomX;//左下のX座標
 	int leftBottomY;//左下のY座標
 	int rightBottomX;//右下のX座標
-	int rightBottomY;//右下のY座標
+	int rightBottomY;//右下のY座標*/
 
 };
 
