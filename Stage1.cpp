@@ -6,30 +6,9 @@ void Stage1::Initialize() {
 
 	playerRad = 64.0f;
 	speed = 5.0f;
-
-	for (int y = 0; y < 8; y++) {
-		for (int x = 0; x < 15; x++) {
-			//ブロックの座標、サイズ設定
-			block[y][x].pos.x = float(x * blockSize);
-			block[y][x].pos.y = float(y * blockSize);
-			block[y][x].size.x = 128.0f;
-			block[y][x].size.y = 128.0f;
-
-			//ブロックがある場合
-			if (map[y][x] == 1) {
-				block[y][x].state = BLOCK;
-				block[y][x].imagePos.x = 0.0f;
-				block[y][x].imagePos.y = 128.0f;
-			}
-
-			//ブロックがない場合
-			if (map[y][x] == 0) {
-				block[y][x].state = NONE;
-				block[y][x].imagePos.x = 128.0f;
-				block[y][x].imagePos.y = 0.0f;
-			}
-		}
-	}
+	
+	stage = 1;
+	CreateMap();
 }
 
 void Stage1::Update() {
@@ -121,8 +100,8 @@ void Stage1::Draw() {
 #endif
 
 	//ブロックの描画
-	for (int y = 0; y < 8; y++) {
-		for (int x = 0; x < 30; x++) {
+	for (int y = 0; y < 100; y++) {
+		for (int x = 0; x < 100; x++) {
 			if (map[y][x] == 1) {
 				Novice::DrawSprite(
 					x * 128, y * 128, gh1, 1, 1, 0.0f, WHITE);
@@ -130,6 +109,47 @@ void Stage1::Draw() {
 		}
 	}
 
+	//プレイヤーの描画
 	Novice::DrawBox(int(playerPos.x), int(playerPos.y), int(playerRad), int(playerRad), 0.0f, 0xFFFFFFFF, kFillModeSolid);
+}
 
+void Stage1::CreateMap()
+{
+	int mapTmp1[100][100] = {
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, };
+
+	for (int y = 0; y < 100; y++) {
+		for (int x = 0; x < 100; x++) {
+			if (stage == 1) {
+				map[y][x] = mapTmp1[y][x];
+
+				//ブロックの座標、サイズ設定
+				block[y][x].pos.x = float(x * blockSize);
+				block[y][x].pos.y = float(y * blockSize);
+				block[y][x].size.x = 128.0f;
+				block[y][x].size.y = 128.0f;
+
+				//ブロックがある場合
+				if (map[y][x] == 1) {
+					block[y][x].state = BLOCK;
+					block[y][x].imagePos.x = 0.0f;
+					block[y][x].imagePos.y = 128.0f;
+				}
+
+				//ブロックがない場合
+				if (map[y][x] == 0) {
+					block[y][x].state = NONE;
+					block[y][x].imagePos.x = 128.0f;
+					block[y][x].imagePos.y = 0.0f;
+				}
+			}
+		}
+	}
 }
