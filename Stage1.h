@@ -35,7 +35,8 @@ private:
 private:
 	enum MapInfo {
 		NONE,
-		BLOCK
+		BLOCK,
+		ENEMY,
 	};
 
 	struct Block {

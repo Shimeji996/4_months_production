@@ -95,7 +95,7 @@ void Stage1::CreateMap()
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,1,0,0,0,0,0,1,0,0,0,0,0,1},
+		{1,0,1,0,0,0,0,0,2,0,0,0,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, };
 
 	for (int y = 0; y < 100; y++) {
@@ -109,19 +109,25 @@ void Stage1::CreateMap()
 				block[y][x].size.x = 128.0f;
 				block[y][x].size.y = 128.0f;
 
+				//敵がいる場合
+				if (map[y][x] == 2) {
+					block[y][x].state = ENEMY;
+					enemy_->Initialize({ float(x * blockSize), float(y * blockSize + enemy_->GetRad()) });
+				}
 				//ブロックがある場合
-				if (map[y][x] == 1) {
+				else if (map[y][x] == 1) {
 					block[y][x].state = BLOCK;
 					block[y][x].imagePos.x = 0.0f;
 					block[y][x].imagePos.y = 128.0f;
 				}
 
 				//ブロックがない場合
-				if (map[y][x] == 0) {
+				else if (map[y][x] == 0) {
 					block[y][x].state = NONE;
 					block[y][x].imagePos.x = 128.0f;
 					block[y][x].imagePos.y = 0.0f;
 				}
+				else {}
 			}
 		}
 	}
@@ -154,7 +160,7 @@ void Stage1::GetAllCollision()
 void Stage1::Player2EnemyCollision()
 {
 	if (playerPos.y <= enemy_->GetPosition().y + enemy_->GetRad() &&
-		playerPos.y+playerRad>=enemy_->GetPosition().y) {
+		playerPos.y + playerRad >= enemy_->GetPosition().y) {
 		if (playerPos.x <= enemy_->GetPosition().x + enemy_->GetRad() &&
 			playerPos.x + playerRad >= enemy_->GetPosition().x) {
 			isHitP2E = true;
@@ -239,7 +245,6 @@ void Stage1::PlayerJumpUpdate()
 void Stage1::Reset()
 {
 	playerPos = { 400.0f,832.0f };
-	enemy_->Initialize({ 800.0f,832.0f });
 
 	stage++;
 	CreateMap();
