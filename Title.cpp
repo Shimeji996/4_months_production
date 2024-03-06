@@ -10,7 +10,8 @@ void Title::Update() {
 	Novice::GetHitKeyStateAll(keys);
 
 	//スペースキーとAボタン
-	if (preKeys[DIK_SPACE] == 0 && keys[DIK_SPACE] || Novice::IsTriggerButton(0, kPadButton10)) {
+	if (preKeys[DIK_SPACE] == 0 && keys[DIK_SPACE] || 
+		Novice::IsTriggerButton(0, kPadButton10)) {
 		sceneNo_ = STAGE1;
 	}
 

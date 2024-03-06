@@ -24,13 +24,18 @@ private:
 	void Player2EnemyCollision();
 	void Player2MapCollision();
 
+	void PlayerUpdate();
 	void PlayerMove();
 	void PlayerJumpInitialize();
 	void PlayerJumpUpdate();
 
 	void Reset();
 
-	void Pushing();
+	void AllPushingBack();
+	void LeftPushingBack();
+	void RightPushingBack();
+	void TopPushingBack();
+	void BottomPushingBack();
 
 	void Gravity();
 

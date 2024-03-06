@@ -24,20 +24,8 @@ void Stage1::Update() {
 	//デバイス関連
 	GetDevice();
 
-	//移動処理
-	PlayerMove();
-
-	if (!isJump) {
-		//重力
-		Gravity();
-	}
-	else if (isJump) {
-		//ジャンプ更新処理
-		PlayerJumpUpdate();
-	}
-
-	//押し出し処理
-	Pushing();
+	//プレイヤーの更新
+	PlayerUpdate();
 
 	//敵の更新関数
 	enemy_->Update();
@@ -201,6 +189,30 @@ void Stage1::Player2MapCollision()
 	}
 }
 
+void Stage1::PlayerUpdate()
+{
+	//移動処理
+	PlayerMove();
+
+	if (!isJump) {
+		//スペースキーを押したら
+		if (isTriggerSpace()) {
+			//ジャンプ開始
+			PlayerJumpInitialize();
+		}
+
+		//重力
+		Gravity();
+	}
+	else {
+		//ジャンプ更新処理
+		PlayerJumpUpdate();
+	}
+
+	//押し出し処理
+	AllPushingBack();
+}
+
 void Stage1::PlayerMove()
 {
 	if (!isHitP2M) {
@@ -232,12 +244,7 @@ void Stage1::PlayerJumpUpdate()
 	}
 
 	if (isLanding) {
-		float tmp = playerPos.y;
-		//押し出し処理
-		while (map[int(tmp / blockSize + 1)][int(playerPos.x / blockSize)] == BLOCK) {
-			tmp -= 0.1f;
-		}
-		playerPos.y = tmp + playerRad;
+		BottomPushingBack();
 		isLanding = false;
 		isJump = false;
 	}
@@ -256,46 +263,63 @@ void Stage1::Reset()
 	CreateMap();
 }
 
-void Stage1::Pushing()
+void Stage1::AllPushingBack()
 {
 	//押し出し処理
 	//下
-	/*while (map[int(playerPos.y / blockSize + 0.5f)][int(playerPos.x / blockSize)] == BLOCK) {
-		playerPos.y -= 0.1f;
-	}*/
+	//BottomPushingBack();
 	//上
-	/*while (map[int(playerPos.y / blockSize - 1)][int(playerPos.x / blockSize)] == BLOCK) {
-		playerPos.y += 0.1f;
-	}*/
+	//TopPushingBack();
 	//左
-	while (map[int(playerPos.y / blockSize)][int(playerPos.x / blockSize)] == BLOCK) {
+	LeftPushingBack();
+	//右
+	RightPushingBack();
+}
+
+void Stage1::LeftPushingBack()
+{
+	while (map[leftBottomY][leftBottomX] == BLOCK || 
+		map[leftTopY][leftTopX] == BLOCK) {
 		playerPos.x += 0.1f;
 	}
-	//右
-	while (map[int(playerPos.y / blockSize)][int(playerPos.x / blockSize + 0.5)] == BLOCK) {
+}
+
+void Stage1::RightPushingBack()
+{
+	while (map[rightBottomY][rightBottomX] == BLOCK ||
+		map[rightTopY][rightTopX] == BLOCK) {
 		playerPos.x -= 0.1f;
+	}
+}
+
+void Stage1::TopPushingBack()
+{
+	while (map[leftTopY][leftTopX] == BLOCK ||
+		map[rightTopY][rightTopX] == BLOCK) {
+		playerPos.y += 0.1f;
+	}
+}
+
+void Stage1::BottomPushingBack()
+{
+	while (map[leftBottomY][leftBottomX] == BLOCK ||
+		map[rightBottomY][rightBottomX] == BLOCK) {
+		playerPos.y -= 0.1f;
 	}
 }
 
 void Stage1::Gravity()
 {
-	float gravity = 0.7f;
-	if (map[int(playerPos.y / blockSize + 0.5)][int(playerPos.x / blockSize)] != BLOCK) {
+	//重力処理
+	/*float gravity = playerAcceleration;
+	while (map[int(playerPos.y / blockSize + 0.5)][int(playerPos.x / blockSize)] != BLOCK) {
 		playerPos.y += gravity;
-	}
-	else {
-		if (!isJump) {
-			//スペースキーを押したら
-			if (isTriggerSpace()) {
-				//ジャンプ開始
-				PlayerJumpInitialize();
-			}
-		}
-	}
+	}*/
 }
 
 bool Stage1::isTriggerSpace() {
-	if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+	if (keys[DIK_SPACE] && !preKeys[DIK_SPACE] ||
+		Novice::IsTriggerButton(0, PadButton::kPadButton10)) {
 		return true;
 	}
 	return false;
