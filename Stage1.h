@@ -10,13 +10,9 @@ class Stage1 : public Scene
 public:
 
 	Stage1();
-
 	~Stage1();
-
 	void Initialize() override;
-
 	void Update() override;
-
 	void Draw() override;
 
 private:
@@ -27,7 +23,6 @@ private:
 	void Player2MapCollision();
 
 	void PlayerMove();
-
 	void PlayerJumpInitialize();
 	void PlayerJumpUpdate();
 
@@ -66,6 +61,9 @@ private:
 	bool isJump = false;
 	float jumpSpeed = 0.0f;
 
+	//敵の生成
+	Enemy* enemy_ = nullptr;
+
 	Block block[100][100]{};
 	int blockSize = 128;
 
@@ -85,10 +83,6 @@ private:
 	int leftBottomY;//左下のY座標
 	int rightBottomX;//右下のX座標
 	int rightBottomY;//右下のY座標
-
-
-	//各クラスの初期化？
-	Enemy* enemy_ = nullptr; //エネミー
 
 };
 

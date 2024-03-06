@@ -14,8 +14,8 @@ void Stage1::Initialize() {
 	playerRad = 64.0f;
 	speed = 5.0f;
 
-	//各クラスの初期化関数
-	enemy_->Initialize();
+	//敵の初期化
+	enemy_ = new Enemy();
 
 	Reset();
 }
@@ -24,9 +24,6 @@ void Stage1::Update() {
 
 	//デバイス関連
 	GetDevice();
-
-	//各クラスの更新関数
-	enemy_->Update();
 
 	//ブロックに当たっていないなら
 	if (!isHitP2M) {
@@ -44,6 +41,9 @@ void Stage1::Update() {
 		PlayerJumpUpdate();
 	}
 	else {}
+
+	//敵の更新関数
+	enemy_->Update();
 
 	//当たり判定
 	Player2MapCollision();
@@ -76,7 +76,7 @@ void Stage1::Draw() {
 	//プレイヤーの描画
 	Novice::DrawBox(int(playerPos.x), int(playerPos.y), int(playerRad), int(playerRad), 0.0f, 0xFFFFFFFF, kFillModeSolid);
 
-	//各クラスの描画関数
+	//敵の描画関数
 	enemy_->Draw();
 }
 
@@ -212,6 +212,7 @@ void Stage1::PlayerJumpUpdate()
 void Stage1::Reset()
 {
 	playerPos = { 400.0f,832.0f };
+	enemy_->Initialize({ 800.0f,832.0f });
 
 	stage++;
 	CreateMap();

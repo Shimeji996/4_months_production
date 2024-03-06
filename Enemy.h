@@ -7,7 +7,7 @@ class Enemy
 public:
 
 	//エネミ初期化関数
-	void Initialize();
+	void Initialize(Vector2 Pos);
 
 	//エネミ更新関数
 	void Update();
@@ -16,7 +16,7 @@ public:
 	void Draw();
 
 	//エネミーリセット
-	void Reset();
+	void Reset(Vector2 Pos);
 
 private:
 

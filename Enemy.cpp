@@ -1,12 +1,10 @@
 ﻿#include "Enemy.h"
 
-void Enemy::Initialize()
+void Enemy::Initialize(Vector2 Pos)
 {
 	enemyRad = 64.0f;
-
 	enemySpeed = 0.5f;
-
-	Reset();
+	Reset(Pos);
 }
 
 void Enemy::Update()
@@ -16,10 +14,10 @@ void Enemy::Update()
 
 void Enemy::Draw()
 {
-	Novice::DrawBox((int)enemyPos.x, (int)enemyPos.y, (int)enemyRad, (int)enemyRad, 0.0f, WHITE, kFillModeSolid);
+	Novice::DrawBox((int)enemyPos.x, (int)enemyPos.y, (int)enemyRad, (int)enemyRad, 0.0f, RED, kFillModeSolid);
 }
 
-void Enemy::Reset()
+void Enemy::Reset(Vector2 Pos)
 {
-	enemyPos = { 800.0f,832.0f };
+	enemyPos = Pos;
 }
