@@ -21,7 +21,9 @@ void Stage1::Update() {
 
 	//ジャンプ処理
 	if (!isJump) {
-		PlayerJumpInitialize();
+		if (isTriggerSpace()) {
+			PlayerJumpInitialize();
+		}
 	}
 	else if (isJump) {
 		PlayerJumpUpdate();
@@ -153,10 +155,8 @@ void Stage1::PlayerMove()
 
 void Stage1::PlayerJumpInitialize()
 {
-	if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-		isJump = true;
-		jumpSpeed = -18.0f;
-	}
+	isJump = true;
+	jumpSpeed = -18.0f;
 }
 
 void Stage1::PlayerJumpUpdate()
@@ -199,3 +199,12 @@ void Stage1::Reset()
 	stage++;
 	CreateMap();
 }
+
+bool Stage1::isTriggerSpace() {
+	if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+		{
+			return true;
+		}
+
+		return false;
+	}

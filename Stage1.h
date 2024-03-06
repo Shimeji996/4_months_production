@@ -27,6 +27,8 @@ private:
 
 	void Reset();
 
+	bool isTriggerSpace();
+
 private:
 	enum MapInfo {
 		NONE,
@@ -45,24 +47,20 @@ private:
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	//スティック操作
 	int stickPosX = 0;
 	int stickPosY = 0;
 
 	int gh1 = Novice::LoadTexture("./Resources/block.png");
 
 	Vector2 playerPos;//実ポジション
-
 	float playerRad;
 	float speed;
+	float playerAcceleration = 0.8f;
 
 	bool isJump = false;
 	float jumpSpeed = 0.0f;
 
-	float playerAcceleration = 0.8f;
-
 	Block block[100][100]{};
-
 	int blockSize = 128;
 
 	int map[100][100]{};
