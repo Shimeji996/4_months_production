@@ -112,7 +112,7 @@ void Stage1::CreateMap()
 				//敵がいる場合
 				if (map[y][x] == 2) {
 					block[y][x].state = ENEMY;
-					enemy_->Initialize({ float(x * blockSize), float(y * blockSize + enemy_->GetRad()) });
+					enemy_->Initialize({ float(x * blockSize), float((y + enemy_->GetRad()) * blockSize) });
 				}
 				//ブロックがある場合
 				else if (map[y][x] == 1) {

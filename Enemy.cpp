@@ -9,7 +9,7 @@ void Enemy::Initialize(Vector2 Pos)
 
 void Enemy::Update()
 {
-	enemyPos.x -= enemySpeed;
+	//enemyPos.x -= enemySpeed;
 }
 
 void Enemy::Draw()
