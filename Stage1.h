@@ -86,7 +86,9 @@ private:
 
 	int stage = 0;
 
-	bool isHitP2M = false;
+	bool isHitLeftRight = false;
+	bool isHitBottom = false;
+
 	bool isHitP2E = false;
 
 	//Vector2 playerPosOld;//仮に進んだときの変数
