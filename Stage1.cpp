@@ -11,7 +11,7 @@ Stage1::~Stage1()
 
 void Stage1::Initialize() {
 
-	playerRad = 64.0f;
+	playerRad = 128.0f;
 	speed = 5.0f;
 
 	//敵の初期化
@@ -133,11 +133,11 @@ void Stage1::GetAllCollision()
 	rightBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
 
 	// 左上座標
-	leftTopX = int((playerPos.x - playerRad) / blockSize + 0.5f);
+	leftTopX = int((playerPos.x - playerRad) / blockSize + 1.0f);
 	leftTopY = int((playerPos.y - playerRad)) / blockSize;
 
 	// 左下座標
-	leftBottomX = int((playerPos.x - playerRad) / blockSize + 0.5f);
+	leftBottomX = int((playerPos.x - playerRad) / blockSize + 1.0f);
 	leftBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
 
 	//プレイヤーとマップチップの当たり判定
@@ -252,7 +252,7 @@ void Stage1::PlayerJumpUpdate()
 
 void Stage1::Reset()
 {
-	playerPos = { 400.0f,832.0f };
+	playerPos = { 400.0f,768.0f };
 
 	isJump = false;
 	isLanding = false;
@@ -293,7 +293,7 @@ void Stage1::RightPushingBack()
 		map[rightTopY][rightTopX] == BLOCK) {
 		playerPos.x -= 0.1f;
 	}*/
-	while (map[int(playerPos.y / blockSize)][int(playerPos.x / blockSize + 0.5)] == BLOCK) {
+	while (map[int(playerPos.y / blockSize)][int(playerPos.x / blockSize + 1.0)] == BLOCK) {
 		playerPos.x -= 0.1f;
 	}
 }
@@ -312,7 +312,7 @@ void Stage1::BottomPushingBack()
 		map[rightBottomY][rightBottomX] == BLOCK) {
 		playerPos.y -= 0.1f;
 	}*/
-	while (map[int(playerPos.y / blockSize + 0.5)][int(playerPos.x / blockSize)] == BLOCK) {
+	while (map[int(playerPos.y / blockSize + 1.0)][int(playerPos.x / blockSize)] == BLOCK) {
 		playerPos.y -= 0.1f;
 	}
 }
@@ -321,7 +321,7 @@ void Stage1::Gravity()
 {
 	//重力処理
 	float gravity = playerAcceleration;
-	while (map[int(playerPos.y / blockSize + 0.5)][int(playerPos.x / blockSize)] != BLOCK) {
+	while (map[int(playerPos.y / blockSize + 1.0)][int(playerPos.x / blockSize)] != BLOCK) {
 		playerPos.y += gravity;
 	}
 }
