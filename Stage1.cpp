@@ -14,14 +14,16 @@ void Stage1::Initialize() {
 	playerPos = { 600.0f,768.0f };
 	playerRad = 128.0f;
 	speed = 5.0f;
+	playerAcceleration = 0.8f;
+	pushingSpeed = 4.0f;
 
 	//敵の初期化
 	enemy_ = new Enemy();
 
 	isJump = false;
 	isLanding = false;
-	isHitLeftRight = false;
-	isHitBottom = false;
+	isGravity = false;
+
 	isHitP2E = false;
 
 	CreateMap();
@@ -46,15 +48,12 @@ void Stage1::Draw() {
 	Novice::ScreenPrintf(0, 0, "Stage1");
 	Novice::ScreenPrintf(0, 20, "playerPos : %2.0f %2.0f", playerPos.x, playerPos.y);
 	Novice::ScreenPrintf(0, 40, "playerMapPos : %d %d", int(playerPos.x) / blockSize, int(playerPos.y) / blockSize);
-	Novice::ScreenPrintf(0, 60, "bottom pos : left:%d %d, right:%d %d", leftBottomX, leftBottomY, rightBottomX, rightBottomY);
-	Novice::ScreenPrintf(0, 80, "mapPos : leftTop:%d %d %d, leftBottom:%d %d %d",
-		leftTopX, leftTopY, map[leftTopX - 1][leftTopY - 1],
-		leftBottomX, leftBottomY, map[leftBottomX - 1][leftBottomY + 1]);
-	Novice::ScreenPrintf(0, 100, "mapPos : rightTop:%d %d %d, rihgtBottom:%d %d %d",
-		rightTopX, rightTopY, map[rightTopX + 1][rightTopY - 1],
-		rightBottomX, rightBottomY, map[rightBottomX + 1][rightBottomY + 1]);
-	Novice::ScreenPrintf(0, 200, "tmp : %d %d, %d", int(playerPos.x / blockSize), int(playerPos.y / blockSize + 1), map[int(playerPos.y / blockSize + 1)][int(playerPos.x / blockSize)]);
-
+	Novice::ScreenPrintf(0, 60, "mapPos : rightBottom:%d %d %d, leftBottom:%d %d %d",
+		int((playerPos.x) / blockSize), int((playerPos.y + playerRad) / blockSize) - 1, map[int((playerPos.y + playerRad) / blockSize) - 1][int((playerPos.x) / blockSize)],
+		int((playerPos.x + playerRad) / blockSize), int((playerPos.y + playerRad) / blockSize) - 1, map[int((playerPos.y + playerRad) / blockSize) - 1][int((playerPos.x + playerRad) / blockSize)]);
+	Novice::ScreenPrintf(0, 80, "%d %d %d %d", isLanding, isJump, isGravity, map[leftBottomY][leftBottomX] == BLOCK ||
+		map[rightBottomY][rightBottomX] == BLOCK);
+	Novice::ScreenPrintf(0, 100, "%d %d %d %d", IsHitLeft(), IsHitRight(), IsHitTop(), IsHitBottom());
 #endif
 
 	//ブロックの描画
@@ -136,14 +135,14 @@ void Stage1::PlayerUpdate()
 	PlayerMove();
 
 	if (!isJump) {
+		//重力
+		Gravity();
+
 		//ジャンプボタンを押したら
-		if (isTriggerSpace()) {
+		if (IsTriggerJump()) {
 			//ジャンプ開始
 			PlayerJumpInitialize();
 		}
-
-		//重力
-		Gravity();
 	}
 	else {
 		//ジャンプ更新処理
@@ -153,13 +152,35 @@ void Stage1::PlayerUpdate()
 
 void Stage1::PlayerMove()
 {
-	if (keys[DIK_A] || stickPosX <= -20000) {
-		playerPos.x -= speed;
+	//左ボタンを押しているとき
+	if (IsPushLeft()) {
+		//ブロックにぶつかっている時
+		if (IsHitLeft()) {
+			//左側押し出し処理
+			LeftPushingBack();
+		}
+		//ぶつかっていない時
+		else {
+			//移動
+			playerPos.x -= speed;
+		}
 	}
-	else if (keys[DIK_D] || stickPosX >= 20000) {
-		playerPos.x += speed;
+	//右ボタンを押しているとき
+	if (IsPushRight()) {
+		//ブロックにぶつかっている時
+		if (IsHitRight()) {
+			//右側押し出し処理
+			RightPushingBack();
+		}
+		//ぶつかっていない時
+		else {
+			//移動
+			playerPos.x += speed;
+		}
 	}
-	else {}
+
+	//ブロックにぶつかっている時
+	//GetAllCollision();
 }
 
 void Stage1::PlayerJumpInitialize()
@@ -170,39 +191,73 @@ void Stage1::PlayerJumpInitialize()
 
 void Stage1::PlayerJumpUpdate()
 {
-	jumpSpeed += playerAcceleration;
-	playerPos.y += jumpSpeed;
-
-	//上側押し出し処理
-	TopPushingBack();
-
-	//着地
-	if (map[leftBottomY][leftBottomX] == BLOCK ||
-		map[rightBottomY][rightBottomX] == BLOCK) {
-		isLanding = true;
+	if (!isLanding) {
+		//下のブロックにぶつかったとき
+		if (map[leftBottomY][leftBottomX] == BLOCK ||
+			map[rightBottomY][rightBottomX] == BLOCK) {
+			//ジャンプの速度を0にする
+			jumpSpeed = 0.0f;
+			playerAcceleration = 0.0f;
+			//着地開始
+			isLanding = true;
+		}
+		//上のブロックにぶつかったとき
+		else if (IsHitTop()) {
+			//上側押し出し処理
+			//TopPushingBack();
+		}
+		//上にも下にもぶつかっていないとき
+		else {
+			//移動
+			jumpSpeed += playerAcceleration;
+			playerPos.y += jumpSpeed;
+		}
 	}
 
-	if (isLanding) {
-		//下側押し出し処理
-		BottomPushingBack();
-
-		//ジャンプ終了
-		isLanding = false;
-		isJump = false;
+	//着地処理
+	else if (isLanding) {
+		//下のブロックに埋まっている時
+		if (map[leftBottomY][leftBottomX] == BLOCK || map[rightBottomY][rightBottomX] == BLOCK) {
+			//下側押し出し処理
+			BottomPushingBack();
+		}
+		else {
+			//着地終了
+			isLanding = false;
+			//ジャンプ終了
+			isJump = false;
+			//加速度を元に戻す
+			playerAcceleration = 0.8f;
+		}
 	}
+
+	else {}
 }
 
 void Stage1::Gravity()
 {
 	//重力処理
-	float gravity = 0.1f;
-	while (map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x) / blockSize)] != BLOCK &&
+	float gravity = 2.0f;
+
+	//浮いているなら
+	if (map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x) / blockSize)] != BLOCK &&
 		map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x + playerRad) / blockSize)] != BLOCK) {
-		playerPos.y += gravity;
+		isGravity = true;
+		while (1) {
+			//下に移動
+			playerPos.y += gravity;
+			break;
+		}
 	}
 
-	//下側押し出し処理
-	BottomPushingBack();
+	if (isGravity) {
+		//下側押し出し処理
+		if (IsHitBottom()) {
+			BottomPushingBack();
+		}
+	}
+
+	isGravity = false;
 }
 
 void Stage1::GetAllCollision()
@@ -227,7 +282,7 @@ void Stage1::GetAllCollision()
 	//Player2MapCollision();
 
 	//左右押し出し処理
-	AllPushingBack();
+	//AllPushingBack();
 
 	//プレイヤーと敵の当たり判定
 	Player2EnemyCollision();
@@ -237,46 +292,81 @@ void Stage1::AllPushingBack()
 {
 	//押し出し処理
 	//左
-	LeftPushingBack();
+	if (IsHitLeft()) {
+		LeftPushingBack();
+	}
 	//右
-	RightPushingBack();
+	if (IsHitRight()) {
+		RightPushingBack();
+	}
 }
 
 void Stage1::LeftPushingBack()
 {
-	while (map[int((playerPos.y + playerRad / 2) / blockSize)][int((playerPos.x) / blockSize)] == BLOCK) {
-		isHitLeftRight = true;
-
-		playerPos.x += 0.1f;
+	while (1) {
+		playerPos.x += pushingSpeed;
+		break;
 	}
-	isHitLeftRight = false;
 }
 
 void Stage1::RightPushingBack()
 {
-	while (map[int((playerPos.y + playerRad / 2) / blockSize)][int((playerPos.x + playerRad) / blockSize)] == BLOCK) {
-		isHitLeftRight = true;
-
-		playerPos.x -= 0.1f;
+	while (1) {
+		playerPos.x -= pushingSpeed;
+		break;
 	}
-	isHitLeftRight = false;
 }
 
 void Stage1::TopPushingBack()
 {
-	while (map[int((playerPos.y) / blockSize)][int((playerPos.x + playerRad / 2) / blockSize)] == BLOCK) {
-		playerPos.y += 0.1f;
+	while (1) {
+		playerPos.y += pushingSpeed;
+		break;
 	}
 }
 
 void Stage1::BottomPushingBack()
 {
-	while (map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x + playerRad / 2) / blockSize)] == BLOCK) {
-		isHitBottom = true;
-
-		playerPos.y -= 0.1f;
+	while (1) {
+		playerPos.y -= pushingSpeed;
+		break;
 	}
-	isHitBottom = false;
+}
+
+bool Stage1::IsHitLeft()
+{
+	int start = int(playerPos.y / blockSize);
+	int end = int((playerPos.y + playerRad) / blockSize) - 1;
+	int X = int((playerPos.x) / blockSize);
+
+	return map[start][X] == BLOCK || map[end][X] == BLOCK ? true : false;
+}
+
+bool Stage1::IsHitRight()
+{
+	int start = int((playerPos.y) / blockSize);
+	int end = int((playerPos.y + playerRad) / blockSize) - 1;
+	int X = int((playerPos.x + playerRad) / blockSize);
+
+	return map[start][X] == BLOCK || map[end][X] == BLOCK ? true : false;
+}
+
+bool Stage1::IsHitTop()
+{
+	int start = int((playerPos.x) / blockSize);
+	int end = int((playerPos.x + playerRad) / blockSize);
+	int Y = int((playerPos.y) / blockSize);
+
+	return map[Y][start] == BLOCK || map[Y][end] == BLOCK ? true : false;
+}
+
+bool Stage1::IsHitBottom()
+{
+	int start = int((playerPos.x) / blockSize);
+	int end = int((playerPos.x + playerRad) / blockSize);
+	int Y = int((playerPos.y + playerRad) / blockSize) - 1;
+
+	return map[Y][start] == BLOCK || map[Y][end] == BLOCK ? true : false;
 }
 
 void Stage1::Player2EnemyCollision()
@@ -303,11 +393,12 @@ void Stage1::Player2EnemyCollision()
 void Stage1::Reset()
 {
 	playerPos = { 400.0f,768.0f };
+	playerAcceleration = 0.8f;
 
 	isJump = false;
 	isLanding = false;
-	isHitLeftRight = false;
-	isHitBottom = false;
+	isGravity = false;
+
 	isHitP2E = false;
 
 	//ステージを次に移動してマップを作り直す
@@ -315,12 +406,19 @@ void Stage1::Reset()
 	CreateMap();
 }
 
-bool Stage1::isTriggerSpace() {
-	if (keys[DIK_SPACE] && !preKeys[DIK_SPACE] ||
-		Novice::IsTriggerButton(0, PadButton::kPadButton10)) {
-		return true;
-	}
-	return false;
+bool Stage1::IsTriggerJump() {
+	return keys[DIK_RETURN] && !preKeys[DIK_RETURN] ||
+		Novice::IsTriggerButton(0, PadButton::kPadButton10) ? true : false;
+}
+
+bool Stage1::IsPushLeft()
+{
+	return keys[DIK_A] || stickPosX <= -20000 ? true : false;
+}
+
+bool Stage1::IsPushRight()
+{
+	return keys[DIK_D] || stickPosX >= 20000 ? true : false;
 }
 
 //使用していない

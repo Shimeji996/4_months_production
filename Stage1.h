@@ -20,16 +20,18 @@ private:
 
 	void CreateMap();
 
-	void GetAllCollision();
-	void Player2EnemyCollision();
-	void Player2MapCollision();
-
 	void PlayerUpdate();
 	void PlayerMove();
 	void PlayerJumpInitialize();
 	void PlayerJumpUpdate();
 
+	void Gravity();
+
 	void Reset();
+
+	void GetAllCollision();
+	//void Player2MapCollision();
+	void Player2EnemyCollision();
 
 	void AllPushingBack();
 	void LeftPushingBack();
@@ -37,9 +39,14 @@ private:
 	void TopPushingBack();
 	void BottomPushingBack();
 
-	void Gravity();
+	bool IsHitLeft();
+	bool IsHitRight();
+	bool IsHitTop();
+	bool IsHitBottom();
 
-	bool isTriggerSpace();
+	bool IsTriggerJump();
+	bool IsPushLeft();
+	bool IsPushRight();
 
 private:
 	enum MapInfo {
@@ -76,6 +83,10 @@ private:
 
 	bool isLanding = false;
 
+	bool isGravity = false;
+
+	float pushingSpeed = 8.0f;
+
 	//敵の生成
 	Enemy* enemy_ = nullptr;
 
@@ -85,9 +96,6 @@ private:
 	int map[100][100]{};
 
 	int stage = 0;
-
-	bool isHitLeftRight = false;
-	bool isHitBottom = false;
 
 	bool isHitP2E = false;
 
