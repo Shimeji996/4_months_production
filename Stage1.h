@@ -25,7 +25,8 @@ private:
 	void PlayerJumpInitialize();
 	void PlayerJumpUpdate();
 
-	void Gravity();
+	void GravityInitialize();
+	void GravityUpdate();
 
 	void Reset();
 
@@ -85,7 +86,7 @@ private:
 
 	bool isGravity = false;
 
-	float pushingSpeed = 8.0f;
+	float pushingSpeed = 0.1f;
 
 	//敵の生成
 	Enemy* enemy_ = nullptr;

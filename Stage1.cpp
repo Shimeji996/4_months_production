@@ -135,13 +135,24 @@ void Stage1::PlayerUpdate()
 	PlayerMove();
 
 	if (!isJump) {
-		//重力
-		Gravity();
-
 		//ジャンプボタンを押したら
 		if (IsTriggerJump()) {
 			//ジャンプ開始
 			PlayerJumpInitialize();
+		}
+
+		//重力処理
+		if (!isGravity) {
+			//浮いているなら
+			if (map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x) / blockSize)] != BLOCK &&
+				map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x + playerRad) / blockSize)] != BLOCK) {
+				//重力
+				GravityInitialize();
+			}
+		}
+		else {
+			//重力更新処理
+			GravityUpdate();
 		}
 	}
 	else {
@@ -180,13 +191,16 @@ void Stage1::PlayerMove()
 	}
 
 	//ブロックにぶつかっている時
-	//GetAllCollision();
+	AllPushingBack();
 }
 
 void Stage1::PlayerJumpInitialize()
 {
 	isJump = true;
 	jumpSpeed = -20.0f;
+	playerAcceleration = 0.8f;
+	isGravity = false;
+	isLanding = false;
 }
 
 void Stage1::PlayerJumpUpdate()
@@ -215,67 +229,70 @@ void Stage1::PlayerJumpUpdate()
 	}
 
 	//着地処理
-	else if (isLanding) {
+	else {
 		//下のブロックに埋まっている時
-		if (map[leftBottomY][leftBottomX] == BLOCK || map[rightBottomY][rightBottomX] == BLOCK) {
-			//下側押し出し処理
-			BottomPushingBack();
-		}
-		else {
-			//着地終了
-			isLanding = false;
-			//ジャンプ終了
-			isJump = false;
-			//加速度を元に戻す
-			playerAcceleration = 0.8f;
-		}
+		BottomPushingBack();//下側押し出し処理
+		//着地終了
+		isLanding = false;
+		//ジャンプ終了
+		isJump = false;
+		//加速度を元に戻す
+		playerAcceleration = 0.8f;
 	}
-
-	else {}
 }
 
-void Stage1::Gravity()
+void Stage1::GravityInitialize()
 {
-	//重力処理
-	float gravity = 2.0f;
+	isGravity = true;
+	jumpSpeed = pushingSpeed;
+	isJump = false;
+	isLanding = false;
+}
 
-	//浮いているなら
-	if (map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x) / blockSize)] != BLOCK &&
-		map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x + playerRad) / blockSize)] != BLOCK) {
-		isGravity = true;
-		while (1) {
-			//下に移動
-			playerPos.y += gravity;
-			break;
+void Stage1::GravityUpdate()
+{
+	if (!isLanding) {
+		//下のブロックにぶつかったとき
+		if (map[leftBottomY][leftBottomX] == BLOCK ||
+			map[rightBottomY][rightBottomX] == BLOCK) {
+			//落下速度を0にする
+			jumpSpeed = 0.0f;
+			//着地開始
+			isLanding = true;
+		}
+		//上にも下にもぶつかっていないとき
+		else {
+			//落下
+			playerPos.y += jumpSpeed;
 		}
 	}
-
-	if (isGravity) {
-		//下側押し出し処理
-		if (IsHitBottom()) {
-			BottomPushingBack();
-		}
+	//着地処理
+	else {
+		//下のブロックに埋まっている時
+		BottomPushingBack();//下側押し出し処理
+		//着地終了
+		isLanding = false;
+		//重力処理終了
+		isGravity = false;
 	}
-
-	isGravity = false;
 }
 
 void Stage1::GetAllCollision()
 {
 	//右上座標
 	rightTopX = int((playerPos.x + playerRad) - 1) / blockSize;
-	rightTopY = int((playerPos.y + playerRad)) / blockSize;
+	rightTopY = int((playerPos.y)) / blockSize;
 
 	// 右下座標
 	rightBottomX = int((playerPos.x + playerRad) - 1) / blockSize;
 	rightBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
 
 	// 左上座標
-	leftTopX = int((playerPos.x + playerRad)) / blockSize;
-	leftTopY = int((playerPos.y + playerRad)) / blockSize;
+	leftTopX = int((playerPos.x)) / blockSize;
+	leftTopY = int((playerPos.y)) / blockSize;
 
 	// 左下座標
-	leftBottomX = int((playerPos.x + playerRad)) / blockSize;
+	leftBottomX = int((playerPos.x)) / blockSize;
 	leftBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
 
 	//プレイヤーとマップチップの当たり判定
@@ -327,46 +344,78 @@ void Stage1::TopPushingBack()
 
 void Stage1::BottomPushingBack()
 {
-	while (1) {
+	while (map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x) / blockSize)] == BLOCK ||
+		map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x + playerRad) / blockSize)] == BLOCK) {
 		playerPos.y -= pushingSpeed;
-		break;
 	}
 }
 
 bool Stage1::IsHitLeft()
 {
-	int start = int(playerPos.y / blockSize);
+	/*int start = int(playerPos.y / blockSize);
 	int end = int((playerPos.y + playerRad) / blockSize) - 1;
-	int X = int((playerPos.x) / blockSize);
+	int X = int((playerPos.x) / blockSize);*/
 
-	return map[start][X] == BLOCK || map[end][X] == BLOCK ? true : false;
+	//return map[start][X] == BLOCK || map[end][X] == BLOCK ? true : false;
+
+	int startY = leftTopY;
+	int endY = leftBottomY;
+	int startX = leftTopX;
+	int endX = leftBottomX;
+
+	return map[startY][startX] == BLOCK || map[startY][endX] == BLOCK ||
+		map[endY][startX] == BLOCK || map[endY][endX] == BLOCK ? true : false;
 }
 
 bool Stage1::IsHitRight()
 {
-	int start = int((playerPos.y) / blockSize);
+	/*int start = int((playerPos.y) / blockSize);
 	int end = int((playerPos.y + playerRad) / blockSize) - 1;
-	int X = int((playerPos.x + playerRad) / blockSize);
+	int X = int((playerPos.x + playerRad) / blockSize);*/
 
-	return map[start][X] == BLOCK || map[end][X] == BLOCK ? true : false;
+	//return map[start][X] == BLOCK || map[end][X] == BLOCK ? true : false;
+
+	int startY = rightTopY;
+	int endY = rightBottomY;
+	int startX = rightTopX;
+	int endX = rightBottomX;
+
+	return map[startY][startX] == BLOCK || map[startY][endX] == BLOCK ||
+		map[endY][startX] == BLOCK || map[endY][endX] == BLOCK ? true : false;
 }
 
 bool Stage1::IsHitTop()
 {
-	int start = int((playerPos.x) / blockSize);
+	/*int start = int((playerPos.x) / blockSize);
 	int end = int((playerPos.x + playerRad) / blockSize);
 	int Y = int((playerPos.y) / blockSize);
 
-	return map[Y][start] == BLOCK || map[Y][end] == BLOCK ? true : false;
+	return map[Y][start] == BLOCK || map[Y][end] == BLOCK ? true : false;*/
+
+	int startY = leftTopY;
+	int endY = rightTopY;
+	int startX = leftTopX;
+	int endX = rightTopX;
+
+	return map[startY][startX] == BLOCK || map[startY][endX] == BLOCK ||
+		map[endY][startX] == BLOCK || map[endY][endX] == BLOCK ? true : false;
 }
 
 bool Stage1::IsHitBottom()
 {
-	int start = int((playerPos.x) / blockSize);
+	/*int start = int((playerPos.x) / blockSize);
 	int end = int((playerPos.x + playerRad) / blockSize);
 	int Y = int((playerPos.y + playerRad) / blockSize) - 1;
 
-	return map[Y][start] == BLOCK || map[Y][end] == BLOCK ? true : false;
+	return map[Y][start] == BLOCK || map[Y][end] == BLOCK ? true : false;*/
+
+	int startY = leftBottomY;
+	int endY = rightBottomY;
+	int startX = leftBottomX;
+	int endX = rightBottomX;
+
+	return map[startY][startX] == BLOCK || map[startY][endX] == BLOCK ||
+		map[endY][startX] == BLOCK || map[endY][endX] == BLOCK ? true : false;
 }
 
 void Stage1::Player2EnemyCollision()
