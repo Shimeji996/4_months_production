@@ -186,7 +186,7 @@ void Stage1::PlayerMove()
 void Stage1::PlayerJumpInitialize()
 {
 	isJump = true;
-	jumpSpeed = -18.0f;
+	jumpSpeed = -20.0f;
 }
 
 void Stage1::PlayerJumpUpdate()
@@ -264,18 +264,18 @@ void Stage1::GetAllCollision()
 {
 	//右上座標
 	rightTopX = int((playerPos.x + playerRad) - 1) / blockSize;
-	rightTopY = int((playerPos.y)) / blockSize;
+	rightTopY = int((playerPos.y + playerRad)) / blockSize;
 
 	// 右下座標
 	rightBottomX = int((playerPos.x + playerRad) - 1) / blockSize;
 	rightBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
 
 	// 左上座標
-	leftTopX = int((playerPos.x)) / blockSize;
-	leftTopY = int((playerPos.y)) / blockSize;
+	leftTopX = int((playerPos.x + playerRad)) / blockSize;
+	leftTopY = int((playerPos.y + playerRad)) / blockSize;
 
 	// 左下座標
-	leftBottomX = int((playerPos.x)) / blockSize;
+	leftBottomX = int((playerPos.x + playerRad)) / blockSize;
 	leftBottomY = int((playerPos.y + playerRad) - 1) / blockSize;
 
 	//プレイヤーとマップチップの当たり判定
