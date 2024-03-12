@@ -86,6 +86,8 @@ private:
 
 	bool isGravity = false;
 
+	bool isHop = false;
+
 	float pushingSpeed = 0.1f;
 
 	//敵の生成

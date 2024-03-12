@@ -13,7 +13,7 @@ void Stage1::Initialize() {
 
 	playerPos = { 600.0f,768.0f };
 	playerRad = 128.0f;
-	speed = 5.0f;
+	speed = 0.0f;
 	playerAcceleration = 0.8f;
 	pushingSpeed = 4.0f;
 
@@ -30,6 +30,17 @@ void Stage1::Initialize() {
 }
 
 void Stage1::Update() {
+
+	if (isJump == true) {
+		playerPos.y += 10.0f;
+		BottomPushingBack();
+	}
+	if (map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x) / blockSize)] != BLOCK &&
+		map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x + playerRad) / blockSize)] != BLOCK) {
+		isJump = true;
+	}
+	else { isJump = false; }
+
 	//デバイス関連
 	GetDevice();
 
@@ -54,6 +65,8 @@ void Stage1::Draw() {
 	Novice::ScreenPrintf(0, 80, "%d %d %d %d", isLanding, isJump, isGravity, map[leftBottomY][leftBottomX] == BLOCK ||
 		map[rightBottomY][rightBottomX] == BLOCK);
 	Novice::ScreenPrintf(0, 100, "%d %d %d %d", IsHitLeft(), IsHitRight(), IsHitTop(), IsHitBottom());
+
+	Novice::ScreenPrintf(1280, 0, "%d", isJump);
 #endif
 
 	//ブロックの描画
@@ -131,10 +144,11 @@ void Stage1::CreateMap()
 
 void Stage1::PlayerUpdate()
 {
+
 	//移動処理
 	PlayerMove();
 
-	if (!isJump) {
+	if (!isHop) {
 		//ジャンプボタンを押したら
 		if (IsTriggerJump()) {
 			//ジャンプ開始
@@ -142,17 +156,20 @@ void Stage1::PlayerUpdate()
 		}
 
 		//重力処理
-		if (!isGravity) {
+		if (isGravity == true && isJump == false) {
+
+			playerPos.y += 20.0f;
 			//浮いているなら
 			if (map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x) / blockSize)] != BLOCK &&
 				map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x + playerRad) / blockSize)] != BLOCK) {
-				//重力
-				GravityInitialize();
+				////重力
+				/*GravityInitialize();*/
+
 			}
 		}
 		else {
 			//重力更新処理
-			GravityUpdate();
+			/*GravityUpdate();*/
 		}
 	}
 	else {
@@ -168,36 +185,43 @@ void Stage1::PlayerMove()
 		//ブロックにぶつかっている時
 		if (IsHitLeft()) {
 			//左側押し出し処理
-			LeftPushingBack();
+			/*LeftPushingBack();*/
+			speed = 0.0f;
 		}
 		//ぶつかっていない時
 		else {
-			//移動
-			playerPos.x -= speed;
+			speed = -5.0f;
+			
 		}
 	}
 	//右ボタンを押しているとき
-	if (IsPushRight()) {
+	else if (IsPushRight()) {
 		//ブロックにぶつかっている時
 		if (IsHitRight()) {
 			//右側押し出し処理
-			RightPushingBack();
+			/*RightPushingBack();*/
+			speed = 0.0f;
 		}
 		//ぶつかっていない時
 		else {
-			//移動
-			playerPos.x += speed;
+			speed = 5.0f;
 		}
 	}
+	else {
+		speed = 0.0f;
+	}
+
+	//移動
+	playerPos.x += speed;
 
 	//ブロックにぶつかっている時
-	AllPushingBack();
+	/*AllPushingBack();*/
 }
 
 void Stage1::PlayerJumpInitialize()
 {
-	isJump = true;
-	jumpSpeed = -20.0f;
+	isHop = true;
+	jumpSpeed = -30.0f;
 	playerAcceleration = 0.8f;
 	isGravity = false;
 	isLanding = false;
@@ -231,11 +255,11 @@ void Stage1::PlayerJumpUpdate()
 	//着地処理
 	else {
 		//下のブロックに埋まっている時
-		BottomPushingBack();//下側押し出し処理
-		//着地終了
+		//BottomPushingBack();//下側押し出し処理
+		////着地終了
 		isLanding = false;
 		//ジャンプ終了
-		isJump = false;
+		isHop = false;
 		//加速度を元に戻す
 		playerAcceleration = 0.8f;
 	}
@@ -251,6 +275,7 @@ void Stage1::GravityInitialize()
 
 void Stage1::GravityUpdate()
 {
+
 	if (!isLanding) {
 		//下のブロックにぶつかったとき
 		if (map[leftBottomY][leftBottomX] == BLOCK ||
@@ -310,7 +335,7 @@ void Stage1::AllPushingBack()
 	//押し出し処理
 	//左
 	if (IsHitLeft()) {
-		LeftPushingBack();
+		/*LeftPushingBack();*/
 	}
 	//右
 	if (IsHitRight()) {
@@ -346,7 +371,10 @@ void Stage1::BottomPushingBack()
 {
 	while (map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x) / blockSize)] == BLOCK ||
 		map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x + playerRad) / blockSize)] == BLOCK) {
-		playerPos.y -= pushingSpeed;
+		if (!IsHitLeft() && !IsHitRight() || IsHitLeft() && IsHitRight()) {
+			playerPos.y -= pushingSpeed;
+		}
+		isJump = false;
 	}
 }
 
