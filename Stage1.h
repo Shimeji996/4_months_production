@@ -113,4 +113,3 @@ private:
 	int rightBottomX;//右下のX座標
 	int rightBottomY;//右下のY座標
 };
-

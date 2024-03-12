@@ -162,7 +162,7 @@ void Stage1::PlayerUpdate()
 			//浮いているなら
 			if (map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x) / blockSize)] != BLOCK &&
 				map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x + playerRad) / blockSize)] != BLOCK) {
-				////重力
+				//重力
 				/*GravityInitialize();*/
 
 			}
@@ -335,7 +335,7 @@ void Stage1::AllPushingBack()
 	//押し出し処理
 	//左
 	if (IsHitLeft()) {
-		/*LeftPushingBack();*/
+		LeftPushingBack();
 	}
 	//右
 	if (IsHitRight()) {
@@ -345,15 +345,16 @@ void Stage1::AllPushingBack()
 
 void Stage1::LeftPushingBack()
 {
-	while (1) {
+	while (map[int((playerPos.y) / blockSize)][int((playerPos.x) / blockSize)] == BLOCK ||
+		map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x) / blockSize)] == BLOCK) {
 		playerPos.x += pushingSpeed;
-		break;
 	}
 }
 
 void Stage1::RightPushingBack()
 {
-	while (1) {
+	while (map[int((playerPos.y) / blockSize)][int((playerPos.x + playerRad) / blockSize)] == BLOCK ||
+		map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x + playerRad) / blockSize)] == BLOCK) {
 		playerPos.x -= pushingSpeed;
 		break;
 	}
@@ -380,16 +381,16 @@ void Stage1::BottomPushingBack()
 
 bool Stage1::IsHitLeft()
 {
-	/*int start = int(playerPos.y / blockSize);
+	/*int start = int(playerPos.y / blockSize);tt
 	int end = int((playerPos.y + playerRad) / blockSize) - 1;
 	int X = int((playerPos.x) / blockSize);*/
 
 	//return map[start][X] == BLOCK || map[end][X] == BLOCK ? true : false;
 
-	int startY = leftTopY;
-	int endY = leftBottomY;
-	int startX = leftTopX;
-	int endX = leftBottomX;
+	int startY = int((playerPos.y) / blockSize);
+	int endY = int((playerPos.y + playerRad - 1) / blockSize);
+	int startX = int((playerPos.x) / blockSize);
+	int endX = int((playerPos.x) / blockSize);
 
 	return map[startY][startX] == BLOCK || map[startY][endX] == BLOCK ||
 		map[endY][startX] == BLOCK || map[endY][endX] == BLOCK ? true : false;
@@ -403,10 +404,10 @@ bool Stage1::IsHitRight()
 
 	//return map[start][X] == BLOCK || map[end][X] == BLOCK ? true : false;
 
-	int startY = rightTopY;
-	int endY = rightBottomY;
-	int startX = rightTopX;
-	int endX = rightBottomX;
+	int startY = int((playerPos.y) / blockSize);
+	int endY = int((playerPos.y + playerRad - 1) / blockSize);
+	int startX = int((playerPos.x + playerRad) / blockSize);
+	int endX = int((playerPos.x + playerRad) / blockSize);
 
 	return map[startY][startX] == BLOCK || map[startY][endX] == BLOCK ||
 		map[endY][startX] == BLOCK || map[endY][endX] == BLOCK ? true : false;
