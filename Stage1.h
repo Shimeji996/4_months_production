@@ -61,6 +61,7 @@ private:
 		Vector2 pos; //座標
 		Vector2 size; //画像の大きさ
 		Vector2 imagePos; //読み込む画像の座標
+		int color;//色
 	};
 
 private:
@@ -78,6 +79,10 @@ private:
 	float speed;
 	float playerAcceleration = 0.8f;
 	unsigned int playerColor = 0xFFFFFFFF;
+	unsigned int playerColor1 = 0xFFFFFFFF;
+	unsigned int playerColor2 = 0xFFFFFFFF;
+	unsigned int playerColor3 = 0xFFFFFFFF;
+	unsigned int playerColor4 = 0xFFFFFFFF;
 
 	bool isJump = false;
 	float jumpSpeed = 0.0f;
@@ -95,6 +100,7 @@ private:
 
 	Block block[100][100]{};
 	int blockSize = 128;
+	int blockColor = 0xFFFFFFFF;
 
 	int map[100][100]{};
 
