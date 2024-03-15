@@ -44,6 +44,7 @@ private:
 	bool IsHitRight();
 	bool IsHitTop();
 	bool IsHitBottom();
+	bool IsHitBottomPlus();
 
 	bool IsTriggerJump();
 	bool IsPushLeft();
@@ -118,4 +119,7 @@ private:
 	int leftBottomY;//左下のY座標
 	int rightBottomX;//右下のX座標
 	int rightBottomY;//右下のY座標
+
+	int bothY;
+	int bothX;
 };

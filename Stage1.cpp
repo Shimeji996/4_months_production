@@ -97,9 +97,13 @@ void Stage1::PlayerUpdate()
 	//重力処理
 	if (map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x) / blockSize)] != BLOCK &&
 		map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x + playerRad - 1) / blockSize)] != BLOCK) {
-		isGravity = true;
+		if (!isGravity) {
+			isGravity = true;
+		}
 	}
-	else { isGravity = false; }
+	else {
+		isGravity = false;
+	}
 	if (isGravity && !isJump) {
 		playerPos.y += 10.0f;
 		BottomPushingBack();
@@ -107,10 +111,14 @@ void Stage1::PlayerUpdate()
 
 	//ジャンプ処理
 	if (!isJump) {
-		//ジャンプボタンを押したら
-		if (IsTriggerJump()) {
-			//ジャンプ開始
-			PlayerJumpInitialize();
+		//地面があるとき
+		if (map[int(playerPos.y + playerRad) / blockSize][int(playerPos.x) / blockSize] == BLOCK ||
+			map[int(playerPos.y + playerRad) / blockSize][int(playerPos.x + playerRad - 1) / blockSize] == BLOCK) {
+			//ジャンプボタンを押したら
+			if (IsTriggerJump()) {
+				//ジャンプ開始
+				PlayerJumpInitialize();
+			}
 		}
 	}
 	else {
@@ -130,13 +138,18 @@ void Stage1::PlayerMove()
 	else if (IsPushRight()) {
 		playerPos.x += speed;
 	}
+	else { playerPos.x = playerPos.x; }
 }
 
 void Stage1::PlayerJumpInitialize()
 {
 	isJump = true;
+
 	jumpSpeed = -18.0f;
 	playerAcceleration = 0.8f;
+
+	//移動
+	playerPos.y += jumpSpeed;
 }
 
 void Stage1::PlayerJumpUpdate()
@@ -144,18 +157,15 @@ void Stage1::PlayerJumpUpdate()
 	//下のブロックにぶつかったとき
 	if (map[leftBottomY][leftBottomX] == BLOCK ||
 		map[rightBottomY][rightBottomX] == BLOCK) {
+		//ジャンプの速度を0にする
+		jumpSpeed = 0.0f;
+		playerAcceleration = 0.0f;
 		//壁にぶつかっていなければ
 		if (!IsHitLeft() && !IsHitRight()) {
-			//ジャンプの速度を0にする
-			jumpSpeed = 0.0f;
-			playerAcceleration = 0.0f;
 			isJump = false;
 		}
 		//壁にぶつかっているとき
-		else {
-			jumpSpeed += playerAcceleration;
-			playerPos.y += jumpSpeed;
-		}
+		else {}
 	}
 	//上にも下にもぶつかっていないとき
 	else {
@@ -236,24 +246,67 @@ void Stage1::AllPushingBack()
 	}
 #endif
 
-	//止まる処理
-	//左
-	if (map[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize] == BLOCK) {
-		playerPos.x = block[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1) / blockSize].pos.x;
-	}
-	//右
-	else if (map[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1) / blockSize] == BLOCK) {
-		playerPos.x = block[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize].pos.x;
-	}
-	//上
-	if (map[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize] == BLOCK ||
-		map[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1) / blockSize] == BLOCK) {
-		playerPos.y = block[int(playerPos.y + blockSize - 1) / blockSize][int(playerPos.x) / blockSize].pos.y;
-	}
-	//下
-	else if (map[int(playerPos.y + blockSize - 1) / blockSize][int(playerPos.x) / blockSize] == BLOCK ||
-		map[int(playerPos.y + blockSize - 1) / blockSize][int(playerPos.x + blockSize - 1) / blockSize] == BLOCK) {
-		playerPos.y = block[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize].pos.y;
+	/*止まる処理*/
+	int maxY = int(playerPos.y + playerRad - 1) / blockSize;
+	int minY = int(playerPos.y) / blockSize;
+	int maxX = int(playerPos.x + playerRad - 1) / blockSize;
+	int minX = int(playerPos.x) / blockSize;
+	for (int y = minY; y <= maxY; ++y) {
+		for (int x = minX; x <= maxX; ++x) {
+			//左上
+			if (map[y][minX] == BLOCK &&
+				map[minY][x] == BLOCK) {
+			}
+			//左下
+			else if (map[y][minX] == BLOCK &&
+				map[maxY][x] == BLOCK) {
+			}
+			//垂直
+			else {
+				//左	
+				if (map[y][minX] == BLOCK) {
+					playerPos.x = block[y][maxX].pos.x;
+				}
+
+				//上
+				if (map[minY][x] == BLOCK) {
+					playerPos.y = block[maxY][x].pos.y;
+				}
+				//下
+				else if (map[maxY][x] == BLOCK) {
+					playerPos.y = block[minY][x].pos.y;
+				}
+				//例外
+				else {}
+			}
+
+			//右上
+			if (map[y][maxX] == BLOCK &&
+				map[minY][x] == BLOCK) {
+			}
+			//右下
+			else if (map[y][maxX] == BLOCK &&
+				map[maxY][x] == BLOCK) {
+			}
+			//垂直
+			else {
+				//右
+				if (map[y][maxX] == BLOCK) {
+					playerPos.x = block[y][minX].pos.x;
+				}
+
+				//上
+				if (map[minY][x] == BLOCK) {
+					playerPos.y = block[maxY][x].pos.y;
+				}
+				//下
+				else if (map[maxY][x] == BLOCK) {
+					playerPos.y = block[minY][x].pos.y;
+				}
+				//例外
+				else {}
+			}
+		}
 	}
 }
 
