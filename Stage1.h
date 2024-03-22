@@ -72,11 +72,13 @@ private:
 	int stickPosX = 0;
 	int stickPosY = 0;
 
-	int gh1 = Novice::LoadTexture("./Resources/block.png");
+	int gh1 = Novice::LoadTexture("./Resources/Mblock.png");
+	int gh2 = Novice::LoadTexture("./Resources/stage00.png");
 
 	Vector2 playerPos;//実ポジション
 	float playerRad;
 	float speed;
+	float speed1;
 	float playerAcceleration = 0.8f;
 	unsigned int playerColor = 0xFFFFFFFF;
 	unsigned int playerColor1 = 0xFFFFFFFF;
@@ -84,8 +86,13 @@ private:
 	unsigned int playerColor3 = 0xFFFFFFFF;
 	unsigned int playerColor4 = 0xFFFFFFFF;
 
+	float scenePosX;
+	float scenePosY;
+
 	bool isJump = false;
 	float jumpSpeed = 0.0f;
+
+	bool isSpeed = false;
 
 	bool isLanding = false;
 

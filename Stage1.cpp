@@ -49,6 +49,8 @@ void Stage1::Update() {
 }
 
 void Stage1::Draw() {
+
+
 #ifdef _DEBUG
 	Novice::ScreenPrintf(0, 0, "Stage1");
 	Novice::ScreenPrintf(0, 20, "playerPos : %2.0f %2.0f", playerPos.x, playerPos.y);
@@ -87,6 +89,7 @@ void Stage1::Draw() {
 	//右下
 	Novice::DrawEllipse(int(playerPos.x + playerRad), int(playerPos.y + playerRad), 5, 5, 0.0f, playerColor4, kFillModeSolid);
 #endif
+
 }
 
 void Stage1::PlayerUpdate()
@@ -125,11 +128,15 @@ void Stage1::PlayerMove()
 	//移動
 	//左ボタンを押しているとき
 	if (IsPushLeft()) {
-		playerPos.x -= speed;
+		if (map[int(playerPos.y) / blockSize][int(playerPos.x - speed) / blockSize] != BLOCK) {
+			playerPos.x -= speed;
+		}
 	}
 	//右ボタンを押しているとき
 	else if (IsPushRight()) {
-		playerPos.x += speed;
+		if (map[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1 + speed) / blockSize] != BLOCK) {
+			playerPos.x += speed;
+		}
 	}
 }
 
