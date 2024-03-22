@@ -69,6 +69,9 @@ void Stage1::Draw() {
 			if (map[y][x] == 1) {
 				Novice::DrawSprite(int(block[y][x].pos.x), int(block[y][x].pos.y), gh1, 1, 1, 0.0f, block[y][x].color);
 			}
+			if (map[y][x] == 3) {
+				Novice::DrawSprite(int(block[y][x].pos.x), int(block[y][x].pos.y), gh1, 1, 1, 0.0f, block[y][x].color);
+			}
 		}
 	}
 
@@ -408,7 +411,7 @@ void Stage1::CreateMap()
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,3,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,1,0,0,0,0,2,0,0,1,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, };
@@ -436,6 +439,11 @@ void Stage1::CreateMap()
 				block[y][x].state = BLOCK;
 				block[y][x].imagePos.x = 0.0f;
 				block[y][x].imagePos.y = 128.0f;
+				block[y][x].color = blockColor;
+			}
+
+			else if (map[y][x] == 3) {
+				block[y][x].state = TALU;
 				block[y][x].color = blockColor;
 			}
 

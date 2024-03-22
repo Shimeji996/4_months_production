@@ -54,6 +54,7 @@ private:
 		NONE,
 		BLOCK,
 		ENEMY,
+		TALU,
 	};
 
 	struct Block {
