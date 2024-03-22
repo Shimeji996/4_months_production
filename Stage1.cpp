@@ -263,7 +263,7 @@ void Stage1::LeftPushingBack()
 {
 	while (map[int((playerPos.y) / blockSize)][int((playerPos.x) / blockSize)] == BLOCK ||
 		map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x) / blockSize)] == BLOCK) {
-		playerPos.x += pushingSpeed;
+		playerPos.x = 0;
 	}
 }
 
@@ -271,7 +271,7 @@ void Stage1::RightPushingBack()
 {
 	while (map[int((playerPos.y) / blockSize)][int((playerPos.x + playerRad) / blockSize)] == BLOCK ||
 		map[int((playerPos.y + playerRad) / blockSize)][int((playerPos.x + playerRad) / blockSize)] == BLOCK) {
-		playerPos.x -= pushingSpeed;
+		playerPos.x = 0;
 		break;
 	}
 }
@@ -279,7 +279,7 @@ void Stage1::RightPushingBack()
 void Stage1::TopPushingBack()
 {
 	while (1) {
-		playerPos.y += pushingSpeed;
+		playerPos.y = 0;
 		break;
 	}
 }
