@@ -106,7 +106,10 @@ void Stage1::PlayerUpdate()
 		isGravity = false;
 	}
 	if (isGravity && !isJump) {
-		playerPos.y += 10.0f;
+		if (map[int(playerPos.y + playerRad + 10) / blockSize][int(playerPos.x) / blockSize] != BLOCK &&
+			map[int(playerPos.y + playerRad + 10) / blockSize][int(playerPos.x + playerRad - 1) / blockSize] != BLOCK) {
+			playerPos.y += 10.0f;
+		}
 		BottomPushingBack();
 	}
 
@@ -128,13 +131,15 @@ void Stage1::PlayerMove()
 	//移動
 	//左ボタンを押しているとき
 	if (IsPushLeft()) {
-		if (map[int(playerPos.y) / blockSize][int(playerPos.x - speed) / blockSize] != BLOCK) {
+		if (map[int(playerPos.y) / blockSize][int(playerPos.x - speed) / blockSize] != BLOCK &&
+			map[int(playerPos.y + playerRad - 1) / blockSize][int(playerPos.x - speed) / blockSize] != BLOCK) {
 			playerPos.x -= speed;
 		}
 	}
 	//右ボタンを押しているとき
 	else if (IsPushRight()) {
-		if (map[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1 + speed) / blockSize] != BLOCK) {
+		if (map[int(playerPos.y) / blockSize][int(playerPos.x + speed + playerRad) / blockSize] != BLOCK &&
+			map[int(playerPos.y + playerRad - 1) / blockSize][int(playerPos.x + speed + playerRad) / blockSize] != BLOCK) {
 			playerPos.x += speed;
 		}
 	}
@@ -150,6 +155,7 @@ void Stage1::PlayerJumpInitialize()
 
 void Stage1::PlayerJumpUpdate()
 {
+	/*
 	//下のブロックにぶつかったとき
 	if (map[leftBottomY][leftBottomX] == BLOCK ||
 		map[rightBottomY][rightBottomX] == BLOCK) {
@@ -163,14 +169,30 @@ void Stage1::PlayerJumpUpdate()
 		//壁にぶつかっているとき
 		else {
 			jumpSpeed += playerAcceleration;
-			playerPos.y += jumpSpeed;
+			//playerPos.y += jumpSpeed;
 		}
 	}
 	//上にも下にもぶつかっていないとき
 	else {
 		//移動
 		jumpSpeed += playerAcceleration;
+		//playerPos.y += jumpSpeed;
+	}*/
+
+	if (jumpSpeed <= 0) {
 		playerPos.y += jumpSpeed;
+	}
+	else {
+		if (map[int(playerPos.y + playerRad + jumpSpeed) / blockSize][int(playerPos.x) / blockSize] != BLOCK &&
+			map[int(playerPos.y + playerRad + jumpSpeed) / blockSize][int(playerPos.x + playerRad - 1) / blockSize] != BLOCK) {
+			playerPos.y += jumpSpeed;
+		}
+		else {
+			isJump = false;
+		}
+	}
+	if (isJump == true) {
+		jumpSpeed += 1;
 	}
 }
 
@@ -213,7 +235,7 @@ void Stage1::AllPushingBack()
 
 	//左下
 	if (map[int(playerPos.y + playerRad - 1) / blockSize][int(playerPos.x) / blockSize] == BLOCK) {
-		block[int(playerPos.y + playerRad - 1) / blockSize][int(playerPos.x) / blockSize].color = RED;
+		block[int(playerPos.y + playerRad - 1) / blockSize][int(playerPos.x) / blockSize].color = GREEN;
 		playerColor2 = BLUE;
 	}
 
@@ -225,7 +247,7 @@ void Stage1::AllPushingBack()
 
 	//右下
 	if (map[int(playerPos.y + playerRad - 1) / blockSize][int(playerPos.x + playerRad - 1) / blockSize] == BLOCK) {
-		block[int(playerPos.y + playerRad - 1) / blockSize][int(playerPos.x + playerRad - 1) / blockSize].color = RED;
+		block[int(playerPos.y + playerRad - 1) / blockSize][int(playerPos.x + playerRad - 1) / blockSize].color = GREEN;
 		playerColor4 = BLUE;
 	}
 
@@ -247,7 +269,7 @@ void Stage1::AllPushingBack()
 
 	//止まる処理
 	//左
-	if (map[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize] == BLOCK) {
+	if (map[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize] == BLOCK )  {
 		playerPos.x = block[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1) / blockSize].pos.x;
 	}
 	//右
@@ -262,7 +284,7 @@ void Stage1::AllPushingBack()
 	//下
 	else if (map[int(playerPos.y + blockSize - 1) / blockSize][int(playerPos.x) / blockSize] == BLOCK ||
 		map[int(playerPos.y + blockSize - 1) / blockSize][int(playerPos.x + blockSize - 1) / blockSize] == BLOCK) {
-		playerPos.y = block[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize].pos.y;
+		/*playerPos.y = block[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize].pos.y;*/
 	}
 }
 
@@ -293,12 +315,14 @@ void Stage1::TopPushingBack()
 
 void Stage1::BottomPushingBack()
 {
-	while (map[int((playerPos.y + playerRad - 1) / blockSize)][int((playerPos.x) / blockSize)] == BLOCK ||
-		map[int((playerPos.y + playerRad - 1) / blockSize)][int((playerPos.x + playerRad - 1) / blockSize)] == BLOCK) {
-		if (!IsHitLeft() && !IsHitRight() || IsHitLeft() && IsHitRight()) {
-			playerPos.y -= pushingSpeed;
-		}
-		isGravity = false;
+	if (map[int(playerPos.y + speed) / blockSize][int(playerPos.x) / blockSize] != BLOCK) {
+		/*while (map[int((playerPos.y + playerRad - 1) / blockSize)][int((playerPos.x) / blockSize)] == BLOCK ||
+			map[int((playerPos.y + playerRad - 1) / blockSize)][int((playerPos.x + playerRad - 1) / blockSize)] == BLOCK) {
+			if (!IsHitLeft() && !IsHitRight() || IsHitLeft() && IsHitRight()) {
+				playerPos.y -= pushingSpeed;
+			}
+			isGravity = false;
+		}*/
 	}
 }
 
