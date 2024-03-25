@@ -7,7 +7,7 @@
 
 class Stage1 : public Scene
 {
-public:
+public:																				
 
 	Stage1();
 	~Stage1();
