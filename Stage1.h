@@ -25,25 +25,12 @@ private:
 	void PlayerJumpInitialize();
 	void PlayerJumpUpdate();
 
-	void GravityInitialize();
-	void GravityUpdate();
-
-	void Reset();
-
 	void GetAllCollision();
-	//void Player2MapCollision();
 	void Player2EnemyCollision();
 
 	void AllPushingBack();
-	void LeftPushingBack();
-	void RightPushingBack();
-	void TopPushingBack();
-	void BottomPushingBack();
 
-	bool IsHitLeft();
-	bool IsHitRight();
-	bool IsHitTop();
-	bool IsHitBottom();
+	void Reset();
 
 	bool IsTriggerJump();
 	bool IsPushLeft();
@@ -65,64 +52,43 @@ private:
 	};
 
 private:
-
+	//キーボード
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
-
+	//スティック
 	int stickPosX = 0;
 	int stickPosY = 0;
 
+	//画像
 	int gh1 = Novice::LoadTexture("./Resources/Mblock.png");
 	int gh2 = Novice::LoadTexture("./Resources/stage00.png");
 
-	Vector2 playerPos;//実ポジション
+	//プレイヤー
+	Vector2 playerPos;
+	Vector2 playerPosStart;
 	float playerRad;
 	float speed;
-	float speed1;
-	float playerAcceleration = 0.8f;
 	unsigned int playerColor = 0xFFFFFFFF;
-	unsigned int playerColor1 = 0xFFFFFFFF;
-	unsigned int playerColor2 = 0xFFFFFFFF;
-	unsigned int playerColor3 = 0xFFFFFFFF;
-	unsigned int playerColor4 = 0xFFFFFFFF;
-
-	float scenePosX;
-	float scenePosY;
 
 	bool isJump = false;
 	float jumpSpeed = 0.0f;
 
-	bool isSpeed = false;
-
-	bool isLanding = false;
-
 	bool isGravity = false;
-
-	bool isHop = false;
-
-	float pushingSpeed = 0.1f;
 
 	//敵の生成
 	Enemy* enemy_ = nullptr;
 
+	//ブロック
 	Block block[100][100]{};
 	int blockSize = 128;
 	int blockColor = 0xFFFFFFFF;
 
+	//マップ
 	int map[100][100]{};
 
+	//ステージ
 	int stage = 0;
 
+	//当たり判定
 	bool isHitP2E = false;
-
-	//Vector2 playerPosOld;//仮に進んだときの変数
-
-	int leftTopX;//左上のX座標
-	int leftTopY;//左上のY座標
-	int rightTopX;//右上のX座標
-	int rightTopY;//右上のY座標
-	int leftBottomX;//左下のX座標
-	int leftBottomY;//左下のY座標
-	int rightBottomX;//右下のX座標
-	int rightBottomY;//右下のY座標
 };
