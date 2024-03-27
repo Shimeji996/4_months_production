@@ -156,7 +156,7 @@ void Stage1::PlayerJumpInitialize()
 void Stage1::PlayerJumpUpdate()
 {
 	// ジャンプ処理
-	if (isJump == true) {
+	if (isJump) {
 
 		// 上昇
 		if (jumpSpeed <= 0) {
@@ -181,22 +181,19 @@ void Stage1::PlayerJumpUpdate()
 				jumpSpeed = 0;
 			}
 		}
+
 		// スピードに重力
-		if (isJump == true) {
-			jumpSpeed += 1;
-		}
+		jumpSpeed += 0.8f;
 	}
 	// 落下開始
-	if (isJump == false) {
+	else if (!isJump) {
 		if (map[int((playerPos.y + playerRad + 0) / blockSize)][int(playerPos.x) / blockSize] != BLOCK &&
 			map[int((playerPos.y + playerRad + 0) / blockSize)][int(playerPos.x + playerRad - 1) / blockSize] != BLOCK) {
-			isJump = true;
+			isGravity = true;
 			jumpSpeed = 0;
 		}
-		else {
-		}
+		else {}
 	}
-
 }
 
 void Stage1::GetAllCollision()
