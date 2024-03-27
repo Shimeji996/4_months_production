@@ -41,6 +41,7 @@ private:
 		NONE,
 		BLOCK,
 		ENEMY,
+		WALA,
 	};
 
 	struct Block {
@@ -74,6 +75,11 @@ private:
 	float jumpSpeed = 0.0f;
 
 	bool isGravity = false;
+
+	//藁
+	Vector2 WalaPos;
+	float WalaRad;
+	float rotateSpeed;
 
 	//敵の生成
 	Enemy* enemy_ = nullptr;

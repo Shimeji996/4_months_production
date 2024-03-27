@@ -20,6 +20,10 @@ void Stage1::Initialize() {
 	//敵の初期化
 	enemy_ = new Enemy();
 
+	//藁の初期化
+	WalaPos = { 784.0, 640.0f };
+	WalaRad = 129.0f;
+
 	isJump = false;
 	isGravity = false;
 
@@ -58,7 +62,7 @@ void Stage1::Draw() {
 			if (map[y][x] == 1) {
 				Novice::DrawSprite(int(block[y][x].pos.x), int(block[y][x].pos.y), gh1, 1, 1, 0.0f, block[y][x].color);
 			}
-			if (map[y][x] == 3) {
+			else if (map[y][x] == 3) {
 				Novice::DrawSprite(int(block[y][x].pos.x), int(block[y][x].pos.y), gh1, 1, 1, 0.0f, block[y][x].color);
 			}
 		}
@@ -215,7 +219,7 @@ void Stage1::Reset()
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,3,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,3,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,1,0,0,0,0,2,0,0,1,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, };
@@ -236,6 +240,11 @@ void Stage1::Reset()
 			if (map[y][x] == 2) {
 				block[y][x].state = ENEMY;
 				enemy_->Initialize({ float(x * blockSize), float((y + enemy_->GetRad()) * blockSize) });
+			}
+
+			else if (map[y][x] == 3) {
+				block[y][x].state = WALA;
+				block[y][x].color = blockColor;
 			}
 
 			//ブロックがある場合
