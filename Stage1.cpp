@@ -156,7 +156,7 @@ void Stage1::AllPushingBack()
 	else if (map[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1) / blockSize] == BLOCK) {
 		playerPos.x = block[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize].pos.x;
 	}
-
+	 
 	//上
 	if (map[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize] == BLOCK ||
 		map[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1) / blockSize] == BLOCK) {
@@ -184,7 +184,7 @@ void Stage1::Player2EnemyCollision()
 	else {
 		isHitP2E = false;
 	}
-
+	
 	//当たっている間
 	if (isHitP2E) { playerColor = BLUE; }
 	else { playerColor = 0xFFFFFFFF; }
@@ -212,7 +212,7 @@ void Stage1::CreateMap()
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,1,0,0,0,0,2,0,0,1,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, };

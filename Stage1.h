@@ -16,27 +16,6 @@ public:
 	void Draw() override;
 
 private:
-	void GetDevice();
-
-	void CreateMap();
-
-	void PlayerUpdate();
-	void PlayerMove();
-	void PlayerJumpInitialize();
-	void PlayerJumpUpdate();
-
-	void GetAllCollision();
-	void Player2EnemyCollision();
-
-	void AllPushingBack();
-
-	void Reset();
-
-	bool IsTriggerJump();
-	bool IsPushLeft();
-	bool IsPushRight();
-
-private:
 	enum MapInfo {
 		NONE,
 		BLOCK,
@@ -50,6 +29,32 @@ private:
 		Vector2 imagePos; //読み込む画像の座標
 		int color;//色
 	};
+
+private:
+	//プレイヤー
+	void PlayerUpdate();
+	void PlayerMove();
+	void PlayerJumpInitialize();
+	void PlayerJumpUpdate();
+
+	//当たり判定
+	void GetAllCollision();
+	void Player2EnemyCollision();
+	void AllPushingBack();
+
+	//マップ
+	void CreateMap();
+
+	//リセット
+	void Reset();
+
+	//デバイス関連
+	void GetDevice();
+
+	//キー操作
+	bool IsTriggerJump();
+	bool IsPushLeft();
+	bool IsPushRight();
 
 private:
 	//キーボード
@@ -72,7 +77,6 @@ private:
 
 	bool isJump = false;
 	float jumpSpeed = 0.0f;
-
 	bool isGravity = false;
 
 	//敵の生成
