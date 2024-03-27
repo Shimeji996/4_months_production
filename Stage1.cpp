@@ -155,45 +155,48 @@ void Stage1::PlayerJumpInitialize()
 
 void Stage1::PlayerJumpUpdate()
 {
-	/*
-	//下のブロックにぶつかったとき
-	if (map[leftBottomY][leftBottomX] == BLOCK ||
-		map[rightBottomY][rightBottomX] == BLOCK) {
-		//壁にぶつかっていなければ
-		if (!IsHitLeft() && !IsHitRight()) {
-			//ジャンプの速度を0にする
-			jumpSpeed = 0.0f;
-			playerAcceleration = 0.0f;
-			isJump = false;
-		}
-		//壁にぶつかっているとき
-		else {
-			jumpSpeed += playerAcceleration;
-			//playerPos.y += jumpSpeed;
-		}
-	}
-	//上にも下にもぶつかっていないとき
-	else {
-		//移動
-		jumpSpeed += playerAcceleration;
-		//playerPos.y += jumpSpeed;
-	}*/
-
-	if (jumpSpeed <= 0) {
-		playerPos.y += jumpSpeed;
-	}
-	else {
-		if (map[int(playerPos.y + playerRad + jumpSpeed) / blockSize][int(playerPos.x) / blockSize] != BLOCK &&
-			map[int(playerPos.y + playerRad + jumpSpeed) / blockSize][int(playerPos.x + playerRad - 1) / blockSize] != BLOCK) {
-			playerPos.y += jumpSpeed;
-		}
-		else {
-			isJump = false;
-		}
-	}
+	// ジャンプ処理
 	if (isJump == true) {
-		jumpSpeed += 1;
+
+		// 上昇
+		if (jumpSpeed <= 0) {
+			if (map[int((playerPos.y + jumpSpeed) / blockSize)][int(playerPos.x) / blockSize] != BLOCK &&
+				map[int((playerPos.y + jumpSpeed) / blockSize)][int(playerPos.x + playerRad - 1) / blockSize] != BLOCK) {
+				playerPos.y += jumpSpeed;
+			}
+			else {
+				// ぶつかった
+				jumpSpeed = 0;
+			}
+		}
+		// 下降
+		else {
+			if (map[int((playerPos.y + playerRad + jumpSpeed)) / blockSize][int(playerPos.x) / blockSize] != BLOCK &&
+				map[int((playerPos.y + playerRad + jumpSpeed)) / blockSize][int(playerPos.x + playerRad - 1) / blockSize] != BLOCK) {
+				playerPos.y += jumpSpeed;
+			}
+			else {
+				// 着地
+				isJump = false;
+				jumpSpeed = 0;
+			}
+		}
+		// スピードに重力
+		if (isJump == true) {
+			jumpSpeed += 1;
+		}
 	}
+	// 落下開始
+	if (isJump == false) {
+		if (map[int((playerPos.y + playerRad + 0) / blockSize)][int(playerPos.x) / blockSize] != BLOCK &&
+			map[int((playerPos.y + playerRad + 0) / blockSize)][int(playerPos.x + playerRad - 1) / blockSize] != BLOCK) {
+			isJump = true;
+			jumpSpeed = 0;
+		}
+		else {
+		}
+	}
+
 }
 
 void Stage1::GetAllCollision()
@@ -439,7 +442,7 @@ void Stage1::CreateMap()
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,1,0,0,0,0,2,0,0,1,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, };
