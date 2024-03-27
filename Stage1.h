@@ -28,6 +28,15 @@ private:
 	void GetAllCollision();
 	void Player2EnemyCollision();
 
+	//プレイヤーと藁の当たり判定
+	void PlayerWalaCollision();
+
+	//プレイヤーを藁から飛ばす処理
+	
+	//回転初期化関数
+	
+	//回転更新関数
+
 	void AllPushingBack();
 
 	void Reset();
@@ -63,6 +72,7 @@ private:
 	//画像
 	int gh1 = Novice::LoadTexture("./Resources/Mblock.png");
 	int gh2 = Novice::LoadTexture("./Resources/stage00.png");
+	int gh3 = Novice::LoadTexture("./Resources/komedawara.png");
 
 	//プレイヤー
 	Vector2 playerPos;
@@ -80,6 +90,9 @@ private:
 	Vector2 WalaPos;
 	float WalaRad;
 	float rotateSpeed;
+
+	//藁の回転
+	bool RotateFlag = false;
 
 	//敵の生成
 	Enemy* enemy_ = nullptr;

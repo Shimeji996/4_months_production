@@ -56,6 +56,12 @@ void Stage1::Draw() {
 		int((playerPos.x + playerRad) / blockSize), int((playerPos.y + playerRad) / blockSize) - 1, map[int((playerPos.y + playerRad) / blockSize) - 1][int((playerPos.x + playerRad) / blockSize)]);
 #endif
 
+	//プレイヤーの描画
+	Novice::DrawBox(int(playerPos.x), int(playerPos.y), int(playerRad), int(playerRad), 0.0f, playerColor, kFillModeSolid); 
+
+	//敵の描画関数
+	enemy_->Draw(); 
+
 	//ブロックの描画
 	for (int y = 0; y < 100; y++) {
 		for (int x = 0; x < 100; x++) {
@@ -63,16 +69,10 @@ void Stage1::Draw() {
 				Novice::DrawSprite(int(block[y][x].pos.x), int(block[y][x].pos.y), gh1, 1, 1, 0.0f, block[y][x].color);
 			}
 			else if (map[y][x] == 3) {
-				Novice::DrawSprite(int(block[y][x].pos.x), int(block[y][x].pos.y), gh1, 1, 1, 0.0f, block[y][x].color);
+				Novice::DrawSprite(int(block[y][x].pos.x), int(block[y][x].pos.y), gh3, 1, 1, 0.0f, block[y][x].color);
 			}
 		}
 	}
-
-	//敵の描画関数
-	enemy_->Draw();
-
-	//プレイヤーの描画
-	Novice::DrawBox(int(playerPos.x), int(playerPos.y), int(playerRad), int(playerRad), 0.0f, playerColor, kFillModeSolid);
 }
 
 void Stage1::PlayerUpdate()
@@ -150,6 +150,9 @@ void Stage1::GetAllCollision()
 
 	//プレイヤーと敵の当たり判定
 	Player2EnemyCollision();
+
+	//プレイヤーと藁の当たり判定
+	PlayerWalaCollision();
 }
 
 void Stage1::AllPushingBack()
@@ -196,6 +199,27 @@ void Stage1::Player2EnemyCollision()
 	else { playerColor = 0xFFFFFFFF; }
 }
 
+void Stage1::PlayerWalaCollision()
+{
+	if (playerPos.y <= WalaPos.y + WalaRad &&
+		playerPos.y + playerRad >= WalaPos.y) {
+		if (playerPos.x <= WalaPos.x + WalaRad &&
+			playerPos.x + playerRad >= WalaPos.x)
+		{
+			RotateFlag = true;
+			isHitP2E = true;
+		}
+		else
+		{
+			RotateFlag = false;
+		}
+	}
+	else
+	{
+		RotateFlag = false;
+	}
+}
+
 void Stage1::Reset()
 {
 	playerPos = playerPosStart;
@@ -219,7 +243,7 @@ void Stage1::Reset()
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,3,0,0,1},
+		{1,0,0,0,0,0,0,3,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,1,0,0,0,0,2,0,0,1,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, };
@@ -287,5 +311,3 @@ bool Stage1::IsPushRight()
 {
 	return keys[DIK_D] || stickPosX >= 20000 ? true : false;
 }
-
-
