@@ -1,10 +1,16 @@
 ﻿#include "Stage1.h"
 
-Stage1::Stage1() {}
+Stage1::Stage1()
+{
+}
 
-Stage1::~Stage1() { delete enemy_; }
+Stage1::~Stage1()
+{
+	delete enemy_;
+}
 
 void Stage1::Initialize() {
+
 	playerPosStart = { 400.0f,768.0f };
 	playerPos = playerPosStart;
 	playerRad = 128.0f;
@@ -41,12 +47,18 @@ void Stage1::Draw() {
 	Novice::ScreenPrintf(0, 0, "Stage1");
 	Novice::ScreenPrintf(0, 20, "playerPos : %2.0f %2.0f", playerPos.x, playerPos.y);
 	Novice::ScreenPrintf(0, 40, "playerMapPos : %d %d", int(playerPos.x) / blockSize, int(playerPos.y) / blockSize);
+	Novice::ScreenPrintf(0, 60, "mapPos : rightBottom:%d %d %d, leftBottom:%d %d %d",
+		int((playerPos.x) / blockSize), int((playerPos.y + playerRad) / blockSize) - 1, map[int((playerPos.y + playerRad) / blockSize) - 1][int((playerPos.x) / blockSize)],
+		int((playerPos.x + playerRad) / blockSize), int((playerPos.y + playerRad) / blockSize) - 1, map[int((playerPos.y + playerRad) / blockSize) - 1][int((playerPos.x + playerRad) / blockSize)]);
 #endif
 
 	//ブロックの描画
 	for (int y = 0; y < 100; y++) {
 		for (int x = 0; x < 100; x++) {
 			if (map[y][x] == 1) {
+				Novice::DrawSprite(int(block[y][x].pos.x), int(block[y][x].pos.y), gh1, 1, 1, 0.0f, block[y][x].color);
+			}
+			if (map[y][x] == 3) {
 				Novice::DrawSprite(int(block[y][x].pos.x), int(block[y][x].pos.y), gh1, 1, 1, 0.0f, block[y][x].color);
 			}
 		}
@@ -73,10 +85,7 @@ void Stage1::PlayerUpdate()
 		isGravity = false;
 	}
 	if (isGravity && !isJump) {
-		if (map[int(playerPos.y + playerRad + 10) / blockSize][int(playerPos.x) / blockSize] != BLOCK &&
-			map[int(playerPos.y + playerRad + 10) / blockSize][int(playerPos.x + playerRad - 1) / blockSize] != BLOCK) {
-			playerPos.y += 10.0f;
-		}
+		playerPos.y += 10.0f;
 	}
 
 	//ジャンプ処理
@@ -97,17 +106,11 @@ void Stage1::PlayerMove()
 	//移動
 	//左ボタンを押しているとき
 	if (IsPushLeft()) {
-		if (map[int(playerPos.y) / blockSize][int(playerPos.x - speed) / blockSize] != BLOCK &&
-			map[int(playerPos.y + playerRad - 1) / blockSize][int(playerPos.x - speed) / blockSize] != BLOCK) {
-			playerPos.x -= speed;
-		}
+		playerPos.x -= speed;
 	}
 	//右ボタンを押しているとき
 	else if (IsPushRight()) {
-		if (map[int(playerPos.y) / blockSize][int(playerPos.x + speed + playerRad) / blockSize] != BLOCK &&
-			map[int(playerPos.y + playerRad - 1) / blockSize][int(playerPos.x + speed + playerRad) / blockSize] != BLOCK) {
-			playerPos.x += speed;
-		}
+		playerPos.x += speed;
 	}
 }
 
@@ -156,7 +159,7 @@ void Stage1::AllPushingBack()
 	else if (map[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1) / blockSize] == BLOCK) {
 		playerPos.x = block[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize].pos.x;
 	}
-	 
+
 	//上
 	if (map[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize] == BLOCK ||
 		map[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1) / blockSize] == BLOCK) {
@@ -165,7 +168,7 @@ void Stage1::AllPushingBack()
 	//下
 	else if (map[int(playerPos.y + blockSize - 1) / blockSize][int(playerPos.x) / blockSize] == BLOCK ||
 		map[int(playerPos.y + blockSize - 1) / blockSize][int(playerPos.x + blockSize - 1) / blockSize] == BLOCK) {
-		/*playerPos.y = block[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize].pos.y;*/
+		playerPos.y = block[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize].pos.y;
 	}
 }
 
@@ -195,6 +198,7 @@ void Stage1::Reset()
 	playerPos = playerPosStart;
 
 	isJump = false;
+	
 	isGravity = false;
 
 	isHitP2E = false;
@@ -204,7 +208,7 @@ void Stage1::Reset()
 	CreateMap();
 }
 
-void Stage1::CreateMap()
+ void Stage1::CreateMap()
 {
 	//仮マップ
 	int mapTmp1[100][100] = {
@@ -212,7 +216,7 @@ void Stage1::CreateMap()
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,3,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,1,0,0,0,0,2,0,0,1,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, };
@@ -262,7 +266,7 @@ void Stage1::GetDevice()
 }
 
 bool Stage1::IsTriggerJump() {
-	return keys[DIK_SPACE] && !preKeys[DIK_SPACE] ||
+	return keys[DIK_RETURN] && !preKeys[DIK_RETURN] ||
 		Novice::IsTriggerButton(0, PadButton::kPadButton10) ? true : false;
 }
 
@@ -275,3 +279,5 @@ bool Stage1::IsPushRight()
 {
 	return keys[DIK_D] || stickPosX >= 20000 ? true : false;
 }
+
+
