@@ -115,6 +115,10 @@ private:
 
 	bool isHitP2E = false;
 
+	// 背景
+	int viewPosX = 0;
+	int viewPosY = 0;
+
 	//Vector2 playerPosOld;//仮に進んだときの変数
 
 	int leftTopX;//左上のX座標

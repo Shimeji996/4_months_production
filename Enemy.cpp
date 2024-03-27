@@ -2,7 +2,7 @@
 
 void Enemy::Initialize(Vector2 Pos)
 {
-	enemyRad = 64.0f;
+	enemyRad = 128.0f;
 	enemySpeed = 0.5f;
 	Reset(Pos);
 }

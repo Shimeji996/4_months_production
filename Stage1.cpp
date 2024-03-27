@@ -64,6 +64,7 @@ void Stage1::Draw() {
 
 	Novice::ScreenPrintf(1280, 0, "%d", isGravity);
 #endif
+	Novice::DrawSprite(int(viewPosX), int(viewPosY), gh2, 1, 1, 0.0f, 0xFFFFFFFF);
 
 	//ブロックの描画
 	for (int y = 0; y < 100; y++) {
@@ -411,7 +412,9 @@ void Stage1::Player2EnemyCollision()
 	}
 
 	//当たっている間
-	if (isHitP2E) { playerColor = BLUE; }
+	if (isHitP2E) { 
+		playerColor = BLUE; 
+	}
 	else { playerColor = 0xFFFFFFFF; }
 }
 
@@ -439,9 +442,9 @@ void Stage1::CreateMap()
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,1,0,0,0,0,2,0,0,1,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,2,0,0,0,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, };
 
 	//マップ生成
