@@ -12,7 +12,7 @@ Stage1::~Stage1()
 void Stage1::Initialize() {
 
 	playerPos = { 600.0f,768.0f };
-	playerRad = 128.0f;
+	playerRad = 64.0f;
 	speed = 5.0f;
 	playerAcceleration = 0.8f;
 	pushingSpeed = 4.0f;
@@ -270,20 +270,20 @@ void Stage1::AllPushingBack()
 	//止まる処理
 	//左
 	if (map[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize] == BLOCK) {
-		playerPos.x = block[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1) / blockSize].pos.x;
+		playerPos.x = block[int(playerPos.y) / blockSize][int(playerPos.x + playerRad) / blockSize].pos.x;
 	}
 	//右
-	else if (map[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1) / blockSize] == BLOCK) {
+	else if (map[int(playerPos.y) / blockSize][int(playerPos.x + playerRad) / blockSize] == BLOCK) {
 		playerPos.x = block[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize].pos.x;
 	}
 	//上
 	if (map[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize] == BLOCK ||
-		map[int(playerPos.y) / blockSize][int(playerPos.x + blockSize - 1) / blockSize] == BLOCK) {
-		playerPos.y = block[int(playerPos.y + blockSize - 1) / blockSize][int(playerPos.x) / blockSize].pos.y;
+		map[int(playerPos.y) / blockSize][int(playerPos.x + playerRad) / blockSize] == BLOCK) {
+		playerPos.y = block[int(playerPos.y + playerRad - 1) / blockSize][int(playerPos.x) / blockSize].pos.y;
 	}
 	//下
-	else if (map[int(playerPos.y + blockSize - 1) / blockSize][int(playerPos.x) / blockSize] == BLOCK ||
-		map[int(playerPos.y + blockSize - 1) / blockSize][int(playerPos.x + blockSize - 1) / blockSize] == BLOCK) {
+	else if (map[int(playerPos.y + playerRad - 1) / blockSize][int(playerPos.x) / blockSize] == BLOCK ||
+		map[int(playerPos.y + playerRad) / blockSize][int(playerPos.x + playerRad) / blockSize] == BLOCK) {
 		/*playerPos.y = block[int(playerPos.y) / blockSize][int(playerPos.x) / blockSize].pos.y;*/
 	}
 }
